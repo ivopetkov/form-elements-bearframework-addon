@@ -11,6 +11,8 @@ $label = (string) $component->label;
 $name = (string) $component->name;
 $value = (string) $component->value;
 $valuePreviewUrl = (string) $component->valuePreviewUrl;
+$style = (string) $component->style;
+$class = (string) $component->class;
 
 $elementID = 'fe' . md5(uniqid());
 
@@ -27,7 +29,7 @@ echo '<div class="ivopetkov-form-elements-element ivopetkov-form-elements-image"
 if (isset($label[0])) {
     echo '<label for="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-element-label ivopetkov-form-elements-image-label">' . htmlspecialchars($label) . '</label>';
 }
-echo '<label for="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-image-element-button" style="cursor:pointer;min-width:50px;min-height:50px;overflow:hidden;display:inline-block;' . (strlen($valuePreviewUrl) > 0 ? 'background-image:url(' . $valuePreviewUrl . ');background-repeat:no-repeat;background-position:center center;background-size:cover;' : '') . '"><span style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;">' . (strlen($value) > 0 ? (strlen($valuePreviewUrl) === 0 ? $value : '') : $browseText) . '</span></label>';
+echo '<label for="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-image-element-button' . (isset($class[0]) ? ' ' . $class : $class) . '" style="cursor:pointer;min-width:50px;min-height:50px;overflow:hidden;display:inline-block;background-repeat:no-repeat;background-position:center center;background-size:cover;' . (strlen($valuePreviewUrl) > 0 ? 'background-image:url(' . $valuePreviewUrl . ');' : '') . $style . '"><span style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;">' . (strlen($value) > 0 ? (strlen($valuePreviewUrl) === 0 ? $value : '') : $browseText) . '</span></label>';
 echo '<span onclick="ivoPetkov.bearFrameworkAddons.formElementsFile.onClearClick(this);" style="cursor:pointer;display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';position:absolute;margin-left:-42px;width:42px;height:42px;overflow:hidden;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;"><span style="display:block;width:42px;height:42px;font-size:25px;color:#fff;text-shadow:#000 0 0 3px;transform:rotate(45deg);margin-top:9px;margin-left:5px;}">&#10010;</span></span>';
 echo '<input name="' . htmlentities($name) . '_files" id="' . htmlentities($elementID) . '" onchange="ivoPetkov.bearFrameworkAddons.formElementsFile.onFilesChange(this);" type="file" accept=".png,.jpg,.jpeg,.gif" style="display:none;"/>';
 echo '<input name="' . htmlentities($name) . '" value="' . htmlentities($value) . '" onchange="ivoPetkov.bearFrameworkAddons.formElementsFile.onValueChange(this);" style="display:none;"/>';

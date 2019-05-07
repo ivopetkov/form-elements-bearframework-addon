@@ -10,6 +10,8 @@
 $label = (string) $component->label;
 $name = (string) $component->name;
 $value = (string) $component->value;
+$style = (string) $component->style;
+$class = (string) $component->class;
 
 $elementID = 'fe' . md5(uniqid());
 
@@ -18,6 +20,6 @@ echo '<div class="ivopetkov-form-elements-element ivopetkov-form-elements-textbo
 if (isset($label[0])) {
     echo '<label for="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-element-label ivopetkov-form-elements-textbox-label">' . htmlspecialchars($label) . '</label>';
 }
-echo '<input name="' . htmlentities($name) . '" id="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-textbox-element-input" type="text" value="' . htmlentities($value) . '"/>';
+echo '<input name="' . htmlentities($name) . '" id="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-textbox-element-input' . (isset($class[0]) ? ' ' . $class : $class) . '" type="text" value="' . htmlentities($value) . '"'.(isset($style[0]) ? ' style="'. htmlentities($style).'"' : '').'"' . (isset($placeholder[0]) ? ' placeholder="' . htmlentities($placeholder) . '"' : '') . '/>';
 echo '</div>';
 echo '</body></html>';
