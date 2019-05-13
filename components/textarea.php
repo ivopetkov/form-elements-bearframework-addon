@@ -7,20 +7,33 @@
  * Free to use under the MIT license.
  */
 
-$label = (string) $component->label;
-$name = (string) $component->name;
-$value = (string) $component->value;
-$style = (string) $component->style;
-$class = (string) $component->class;
-$placeholder = (string) $component->placeholder;
+$attributes = $component->getAttributes();
 
-$elementID = 'fe' . md5(uniqid());
+$label = (string) $component->label;
+if (isset($attributes['label'])) {
+    unset($attributes['label']);
+}
+$hasLabel = isset($label[0]);
+
+$value = (string) $component->value;
+if (isset($attributes['value'])) {
+    unset($attributes['value']);
+}
+
+if ($hasLabel && !isset($attributes['id'])) {
+    $attributes['id'] = 'fe' . md5(uniqid());
+}
+$attributes['data-form-element-component'] = 'textarea';
+
+$attributesText = implode(' ', array_map(function ($name, $value) {
+            return $name . '="' . htmlentities($value) . '"';
+        }, array_keys($attributes), $attributes));
 
 echo '<html><body>';
-echo '<div class="ivopetkov-form-elements-element ivopetkov-form-elements-textarea">';
-if (isset($label[0])) {
-    echo '<label for="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-element-label ivopetkov-form-elements-textarea-label">' . htmlspecialchars($label) . '</label>';
+echo '<div data-form-element="textarea">';
+if ($hasLabel) {
+    echo '<label for="' . htmlentities($attributes['id']) . '" data-form-element-component="label">' . htmlspecialchars($label) . '</label>';
 }
-echo '<textarea name="' . htmlentities($name) . '" id="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-textarea-element-textarea' . (isset($class[0]) ? ' ' . $class : $class) . '"' . (isset($style[0]) ? ' style="' . htmlentities($style) . '"' : '') . '"' . (isset($placeholder[0]) ? ' placeholder="' . htmlentities($placeholder) . '"' : '') . '>' . htmlentities($value) . '</textarea>';
+echo '<textarea  ' . $attributesText . '>' . htmlentities($value) . '</textarea>';
 echo '</div>';
 echo '</body></html>';

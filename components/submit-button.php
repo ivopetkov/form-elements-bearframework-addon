@@ -7,20 +7,37 @@
  * Free to use under the MIT license.
  */
 
+$attributes = $component->getAttributes();
+
 $text = (string) $component->text;
+if (isset($attributes['text'])) {
+    unset($attributes['text']);
+}
+
 $waitingText = (string) $component->waitingText;
-$style = (string) $component->style;
-$class = (string) $component->class;
-$waitingClass = trim('ivopetkov-form-elements-submit-button-element-button ' . (string) $component->waitingClass);
+if (isset($attributes['waitingtext'])) {
+    unset($attributes['waitingtext']);
+}
+
+$waitingClass = (string) $component->waitingClass;
+if (isset($attributes['waitingclass'])) {
+    unset($attributes['waitingclass']);
+}
+
+$attributes['data-form-element-component'] = 'button';
+
+$attributesText = implode(' ', array_map(function ($name, $value) {
+            return $name . '="' . htmlentities($value) . '"';
+        }, array_keys($attributes), $attributes));
 
 echo '<html><head>';
-//echo '<script>' . file_get_contents(__DIR__ . '/../dev/submit-button.js') . '</script>';
-//taken from dev/submit-button.js
-$js = 'var ivoPetkov=ivoPetkov||{};ivoPetkov.bearFrameworkAddons=ivoPetkov.bearFrameworkAddons||{};ivoPetkov.bearFrameworkAddons.formElementsSubmitButton=ivoPetkov.bearFrameworkAddons.formElementsSubmitButton||function(){return{onClick:function(a,g,d){for(var b=a;b&&"form"!==b.tagName.toLowerCase();)b=b.parentNode;if(b&&("undefined"===typeof a.disableNextClick||!a.disableNextClick)){var c=b,e=function(){a.disableNextClick=!0;"undefined"===typeof a.originalInnerText&&(a.originalInnerText=a.innerText);"undefined"===typeof a.originalClass&&(a.originalClass=a.getAttribute("class"));0<d.length&&a.setAttribute("class",d);a.innerText=g;a.setAttribute("disabled","true");a.style.cursor="default"},f=function(){a.disableNextClick=!1;a.innerText=a.originalInnerText;a.removeAttribute("disabled");a.style.cursor="pointer";c.removeEventListener("requestsent",e);c.removeEventListener("responsereceived",f);a.setAttribute("class",a.originalClass)};c.addEventListener("submitstart",e);c.addEventListener("submitend",f);c.submit()}}}}();';
+echo '<style>[data-form-element="submit-button"]>[data-form-element-component="button"]{cursor:pointer;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;}</style>';
+//$js = file_get_contents(__DIR__ . '/../dev/submit-button.js');
+$js = include __DIR__ . '/submit-button.min.js.php';
 echo '<script>' . $js . '</script>';
 echo '</head><body>';
-echo '<div class="ivopetkov-form-elements-element ivopetkov-form-elements-submit-button">';
+echo '<div data-form-element="submit-button">';
 $onClick = 'ivoPetkov.bearFrameworkAddons.formElementsSubmitButton.onClick(this,' . json_encode($waitingText) . ',' . json_encode($waitingClass) . ');';
-echo '<span class="ivopetkov-form-elements-submit-button-element-button' . (isset($class[0]) ? ' ' . $class : $class) . '" style="cursor:pointer;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;' . htmlentities($style) . '" onclick="' . htmlentities($onClick) . '">' . htmlspecialchars($text) . '</span>';
+echo '<span ' . $attributesText . ' onclick="' . htmlentities($onClick) . '">' . htmlspecialchars($text) . '</span>';
 echo '</div>';
 echo '</body></html>';

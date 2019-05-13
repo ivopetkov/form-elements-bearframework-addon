@@ -7,11 +7,17 @@
  * Free to use under the MIT license.
  */
 
-$name = (string) $component->name;
-$value = (string) $component->value;
-$style = (string) $component->style;
-$class = (string) $component->class;
+$attributes = $component->getAttributes();
+
+$attributes['data-form-element-component'] = 'input';
+$attributes['type'] = 'hidden';
+
+$attributesText = implode(' ', array_map(function ($name, $value) {
+            return $name . '="' . htmlentities($value) . '"';
+        }, array_keys($attributes), $attributes));
 
 echo '<html><body>';
-echo '<input name="' . htmlentities($name) . '" class="ivopetkov-form-elements-hidden-element-input' . (isset($class[0]) ? ' ' . $class : $class) . '" type="hidden" value="' . htmlentities($value) . '"' . (isset($style[0]) ? ' style="' . htmlentities($style) . '"' : '') . '/>';
+echo '<div data-form-element="hidden">';
+echo '<input ' . $attributesText . '/>';
+echo '</div>';
 echo '</body></html>';

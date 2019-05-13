@@ -7,19 +7,29 @@
  * Free to use under the MIT license.
  */
 
-$label = (string) $component->label;
-$name = (string) $component->name;
-$value = (string) $component->value;
-$style = (string) $component->style;
-$class = (string) $component->class;
+$attributes = $component->getAttributes();
 
-$elementID = 'fe' . md5(uniqid());
+$label = (string) $component->label;
+if (isset($attributes['label'])) {
+    unset($attributes['label']);
+}
+$hasLabel = isset($label[0]);
+
+if ($hasLabel && !isset($attributes['id'])) {
+    $attributes['id'] = 'fe' . md5(uniqid());
+}
+$attributes['data-form-element-component'] = 'input';
+$attributes['type'] = 'text';
+
+$attributesText = implode(' ', array_map(function ($name, $value) {
+            return $name . '="' . htmlentities($value) . '"';
+        }, array_keys($attributes), $attributes));
 
 echo '<html><body>';
-echo '<div class="ivopetkov-form-elements-element ivopetkov-form-elements-textbox">';
-if (isset($label[0])) {
-    echo '<label for="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-element-label ivopetkov-form-elements-textbox-label">' . htmlspecialchars($label) . '</label>';
+echo '<div data-form-element="textbox">';
+if ($hasLabel) {
+    echo '<label for="' . htmlentities($attributes['id']) . '" data-form-element-component="label">' . htmlspecialchars($label) . '</label>';
 }
-echo '<input name="' . htmlentities($name) . '" id="' . htmlentities($elementID) . '" class="ivopetkov-form-elements-textbox-element-input' . (isset($class[0]) ? ' ' . $class : $class) . '" type="text" value="' . htmlentities($value) . '"'.(isset($style[0]) ? ' style="'. htmlentities($style).'"' : '').'"' . (isset($placeholder[0]) ? ' placeholder="' . htmlentities($placeholder) . '"' : '') . '/>';
+echo '<input ' . $attributesText . '/>';
 echo '</div>';
 echo '</body></html>';
