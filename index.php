@@ -10,7 +10,7 @@
 use BearFramework\App;
 
 $app = App::get();
-$context = $app->contexts->get(__FILE__);
+$context = $app->contexts->get(__DIR__);
 
 $app->localization
         ->addDictionary('en', function() use ($context) {
