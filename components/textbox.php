@@ -22,8 +22,8 @@ $attributes['data-form-element-component'] = 'input';
 $attributes['type'] = 'text';
 
 $attributesText = implode(' ', array_map(function ($name, $value) {
-            return $name . '="' . htmlentities($value) . '"';
-        }, array_keys($attributes), $attributes));
+    return $name . '="' . htmlentities($value) . '"';
+}, array_keys($attributes), $attributes));
 
 echo '<html><body>';
 echo '<div data-form-element="textbox">';

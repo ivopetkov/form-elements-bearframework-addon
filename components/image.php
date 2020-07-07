@@ -41,19 +41,19 @@ if (strlen($valuePreviewUrl) > 0) {
 }
 
 $attributesText = implode(' ', array_map(function ($name, $value) {
-            return $name . '="' . htmlentities($value) . '"';
-        }, array_keys($attributes), $attributes));
+    return $name . '="' . htmlentities($value) . '"';
+}, array_keys($attributes), $attributes));
 
 $browseText = __('ivopetkov.form-element.image.Choose');
 
 echo '<html><head>';
 echo '<style>'
- . '[data-form-element="image"]{position:relative;}' // needed for the absolute positioned clear button
- . '[data-form-element="image"]>[data-form-element-component="button"]{cursor:pointer;min-width:50px;min-height:50px;overflow:hidden;display:inline-block;background-repeat:no-repeat;background-position:center center;background-size:cover;}'
- . '[data-form-element="image"]>[data-form-element-component="button"]>span{display:flex;width:100%;height:100%;align-items:center;justify-content:center;}'
- . '[data-form-element="image"]>[data-form-element-component="clear-button"]{cursor:pointer;position:absolute;margin-left:-42px;width:42px;height:42px;overflow:hidden;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;}'
- . '[data-form-element="image"]>[data-form-element-component="clear-button"]>span{display:block;width:42px;height:42px;font-size:25px;color:#fff;text-shadow:#000 0 0 3px;transform:rotate(45deg);margin-top:9px;margin-left:5px;}'
- . '</style>';
+    . '[data-form-element="image"]{position:relative;}' // needed for the absolute positioned clear button
+    . '[data-form-element="image"]>[data-form-element-component="button"]{cursor:pointer;min-width:50px;min-height:50px;overflow:hidden;display:inline-block;background-repeat:no-repeat;background-position:center center;background-size:cover;}'
+    . '[data-form-element="image"]>[data-form-element-component="button"]>span{display:flex;width:100%;height:100%;align-items:center;justify-content:center;}'
+    . '[data-form-element="image"]>[data-form-element-component="clear-button"]{cursor:pointer;position:absolute;margin-left:-42px;width:42px;height:42px;overflow:hidden;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;}'
+    . '[data-form-element="image"]>[data-form-element-component="clear-button"]>span{display:block;width:42px;height:42px;font-size:25px;color:#fff;text-shadow:#000 0 0 3px;transform:rotate(45deg);margin-top:9px;margin-left:5px;}'
+    . '</style>';
 //$js = file_get_contents(__DIR__ . '/../dev/image.js');
 $js = include __DIR__ . '/image.min.js.php';
 $js = str_replace('CHOOSE_TEXT_TO_REPLACE', $browseText, $js);

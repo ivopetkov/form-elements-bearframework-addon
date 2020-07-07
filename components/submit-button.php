@@ -27,8 +27,8 @@ if (isset($attributes['waitingclass'])) {
 $attributes['data-form-element-component'] = 'button';
 
 $attributesText = implode(' ', array_map(function ($name, $value) {
-            return $name . '="' . htmlentities($value) . '"';
-        }, array_keys($attributes), $attributes));
+    return $name . '="' . htmlentities($value) . '"';
+}, array_keys($attributes), $attributes));
 
 echo '<html><head>';
 echo '<style>[data-form-element="submit-button"]>[data-form-element-component="button"]{cursor:pointer;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;}</style>';

@@ -26,8 +26,8 @@ if ($hasLabel && !isset($attributes['id'])) {
 $attributes['data-form-element-component'] = 'textarea';
 
 $attributesText = implode(' ', array_map(function ($name, $value) {
-            return $name . '="' . htmlentities($value) . '"';
-        }, array_keys($attributes), $attributes));
+    return $name . '="' . htmlentities($value) . '"';
+}, array_keys($attributes), $attributes));
 
 echo '<html><body>';
 echo '<div data-form-element="textarea">';
