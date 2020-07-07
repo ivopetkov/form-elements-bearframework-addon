@@ -22,6 +22,7 @@ $app->localization
 
 $app->components
     ->addTag('form-element-textbox', 'file:' . $context->dir . '/components/textbox.php')
+    ->addTag('form-element-password', 'file:' . $context->dir . '/components/password.php')
     ->addTag('form-element-hidden', 'file:' . $context->dir . '/components/hidden.php')
     ->addTag('form-element-textarea', 'file:' . $context->dir . '/components/textarea.php')
     ->addTag('form-element-image', 'file:' . $context->dir . '/components/image.php')
