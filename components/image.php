@@ -45,7 +45,7 @@ echo '<style>'
     . '[data-form-element-type="image"] [data-form-element-component="button"]>span{display:flex;width:100%;height:100%;align-items:center;justify-content:center;}'
     . '[data-form-element-type="image"] [data-form-element-component="clear-button"]{cursor:pointer;position:absolute;margin-left:-42px;width:42px;height:42px;overflow:hidden;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;}'
     . '[data-form-element-type="image"] [data-form-element-component="clear-button"]>span{display:block;width:42px;height:42px;font-size:25px;color:#fff;text-shadow:#000 0 0 3px;transform:rotate(45deg);margin-top:9px;margin-left:5px;}'
-    .Utilities::getDefaultStyles()
+    . Utilities::getDefaultStyles()
     . '</style>';
 //$js = file_get_contents(__DIR__ . '/../dev/image.js');
 $js = include __DIR__ . '/image.min.js.php';
@@ -60,7 +60,7 @@ if ($labelElement !== '') {
     echo '<label>';
 }
 echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '"><span>' . (strlen($value) > 0 ? (strlen($valuePreviewUrl) === 0 ? $value : '') : $browseText) . '</span></label>';
-echo '<span data-form-element-component="clear-button" onclick="ivoPetkov.bearFrameworkAddons.formElementsFile.onClearClick(this);" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"><span>&#10010;</span></span>';
+echo '<span data-form-element-component="clear-button" onclick="event.stopPropagation();event.preventDefault();ivoPetkov.bearFrameworkAddons.formElementsFile.onClearClick(this);" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"><span>&#10010;</span></span>';
 echo '<input name="' . htmlentities($name) . '_files" id="' . htmlentities($elementID) . '" onchange="ivoPetkov.bearFrameworkAddons.formElementsFile.onFilesChange(this);" type="file" accept=".png,.jpg,.jpeg,.gif" style="display:none;"/>';
 echo '<input name="' . htmlentities($name) . '" value="' . htmlentities($value) . '" onchange="ivoPetkov.bearFrameworkAddons.formElementsFile.onValueChange(this);" type="hidden"/>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.image.js');
