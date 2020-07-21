@@ -20,6 +20,9 @@ $app->localization
         return include $context->dir . '/locales/bg.php';
     });
 
+$context->classes
+    ->add('IvoPetkov\BearFrameworkAddons\FormElements\*', 'classes/*.php');
+
 $app->components
     ->addTag('form-element-checkbox', 'file:' . $context->dir . '/components/checkbox.php')
     ->addTag('form-element-hidden', 'file:' . $context->dir . '/components/hidden.php')

@@ -7,28 +7,33 @@
  * Free to use under the MIT license.
  */
 
+use IvoPetkov\BearFrameworkAddons\FormElements\Utilities;
+
 $attributes = $component->getAttributes();
 
-$label = (string) $component->label;
-if (isset($attributes['label'])) {
-    unset($attributes['label']);
+$value = (string) $component->value;
+if (isset($attributes['value'])) {
+    unset($attributes['value']);
 }
-$hasLabel = isset($label[0]);
 
-if ($hasLabel && !isset($attributes['id'])) {
-    $attributes['id'] = 'fe' . md5(uniqid());
+$options = $component->innerHTML;
+if (strlen($value) > 0) {
+    $search = 'value="' . $value . '"';
+    $options = str_replace($search, $search . ' selected', $options);
 }
+
 $attributes['data-form-element-component'] = 'select';
 
-$attributesText = implode(' ', array_map(function ($name, $value) {
-    return $name . '="' . htmlentities($value) . '"';
-}, array_keys($attributes), $attributes));
-
-echo '<html><body>';
-echo '<div data-form-element="select">';
-if ($hasLabel) {
-    echo '<label for="' . htmlentities($attributes['id']) . '" data-form-element-component="label">' . htmlspecialchars($label) . '</label>';
-}
-echo '<select ' . $attributesText . '>'.$component->innerHTML.'</select>';
+echo '<html><head>';
+echo '<style>' . Utilities::getDefaultStyles() . '</style>';
+echo '</head><body>';
+echo '<div ' . Utilities::getContainerAttributes('select', $attributes) . '>';
+echo '<label>';
+echo Utilities::getLabelElement($attributes);
+echo '<select ' . Utilities::getElementAttributes($attributes) . '>' . $options . '</select>';
+echo '</label>';
+//$js = file_get_contents(__DIR__ . '/../dev/api.select.js');
+$js = include __DIR__ . '/select.api.min.js.php';
+echo '<script>' . $js . '</script>';
 echo '</div>';
 echo '</body></html>';

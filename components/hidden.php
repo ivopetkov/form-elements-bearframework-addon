@@ -7,17 +7,18 @@
  * Free to use under the MIT license.
  */
 
+use IvoPetkov\BearFrameworkAddons\FormElements\Utilities;
+
 $attributes = $component->getAttributes();
 
 $attributes['data-form-element-component'] = 'input';
 $attributes['type'] = 'hidden';
 
-$attributesText = implode(' ', array_map(function ($name, $value) {
-    return $name . '="' . htmlentities($value) . '"';
-}, array_keys($attributes), $attributes));
-
 echo '<html><body>';
-echo '<div data-form-element="hidden">';
-echo '<input ' . $attributesText . '/>';
+echo '<div ' . Utilities::getContainerAttributes('hidden', $attributes) . '>';
+echo '<input ' . Utilities::getElementAttributes($attributes) . '/>';
+//$js = file_get_contents(__DIR__ . '/../dev/api.hidden.js');
+$js = include __DIR__ . '/hidden.api.min.js.php';
+echo '<script>' . $js . '</script>';
 echo '</div>';
 echo '</body></html>';

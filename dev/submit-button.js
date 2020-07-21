@@ -9,7 +9,7 @@ var ivoPetkov = ivoPetkov || {};
 ivoPetkov.bearFrameworkAddons = ivoPetkov.bearFrameworkAddons || {};
 ivoPetkov.bearFrameworkAddons.formElementsSubmitButton = ivoPetkov.bearFrameworkAddons.formElementsSubmitButton || (function () {
 
-    var onClick = function (button, waitingText, waitingClass) {
+    var onClick = function (button, waitingText, waitingClass, enableAfterSubmit) {
         var element = button;
         while (element && element.tagName.toLowerCase() !== 'form') {
             element = element.parentNode;
@@ -22,7 +22,7 @@ ivoPetkov.bearFrameworkAddons.formElementsSubmitButton = ivoPetkov.bearFramework
         }
         var form = element;
 
-        var onSubmitStart = function () {
+        var onSubmitStart = () => {
             button.disableNextClick = true;
             if (typeof button.originalInnerText === 'undefined') {
                 button.originalInnerText = button.innerText;
@@ -38,18 +38,30 @@ ivoPetkov.bearFrameworkAddons.formElementsSubmitButton = ivoPetkov.bearFramework
             button.style.cursor = 'default';
         };
 
-        var onSubmitEnd = function () {
-            button.disableNextClick = false;
-            button.innerText = button.originalInnerText;
-            button.removeAttribute('disabled');
-            button.style.cursor = 'pointer';
-            form.removeEventListener('requestsent', onSubmitStart);
-            form.removeEventListener('responsereceived', onSubmitEnd);
-            button.setAttribute('class', button.originalClass);
+        var onSubmitEnd = success => {
+            form.removeEventListener('submitstart', onSubmitStart);
+            form.removeEventListener('submitsuccess', onSubmitSuccess);
+            form.removeEventListener('submiterror', onSubmitError);
+            if (!success || enableAfterSubmit) {
+                button.disableNextClick = false;
+                button.innerText = button.originalInnerText;
+                button.removeAttribute('disabled');
+                button.style.cursor = 'pointer';
+                button.setAttribute('class', button.originalClass);
+            }
+        };
+
+        var onSubmitSuccess = () => {
+            onSubmitEnd(true);
+        };
+
+        var onSubmitError = () => {
+            onSubmitEnd(false);
         };
 
         form.addEventListener('submitstart', onSubmitStart);
-        form.addEventListener('submitend', onSubmitEnd);
+        form.addEventListener('submitsuccess', onSubmitSuccess);
+        form.addEventListener('submiterror', onSubmitError);
 
         form.submit();
     };

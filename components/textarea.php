@@ -7,33 +7,27 @@
  * Free to use under the MIT license.
  */
 
-$attributes = $component->getAttributes();
+use IvoPetkov\BearFrameworkAddons\FormElements\Utilities;
 
-$label = (string) $component->label;
-if (isset($attributes['label'])) {
-    unset($attributes['label']);
-}
-$hasLabel = isset($label[0]);
+$attributes = $component->getAttributes();
 
 $value = (string) $component->value;
 if (isset($attributes['value'])) {
     unset($attributes['value']);
 }
 
-if ($hasLabel && !isset($attributes['id'])) {
-    $attributes['id'] = 'fe' . md5(uniqid());
-}
 $attributes['data-form-element-component'] = 'textarea';
 
-$attributesText = implode(' ', array_map(function ($name, $value) {
-    return $name . '="' . htmlentities($value) . '"';
-}, array_keys($attributes), $attributes));
-
-echo '<html><body>';
-echo '<div data-form-element="textarea">';
-if ($hasLabel) {
-    echo '<label for="' . htmlentities($attributes['id']) . '" data-form-element-component="label">' . htmlspecialchars($label) . '</label>';
-}
-echo '<textarea  ' . $attributesText . '>' . htmlentities($value) . '</textarea>';
+echo '<html><head>';
+echo '<style>' . Utilities::getDefaultStyles() . '</style>';
+echo '</head><body>';
+echo '<div ' . Utilities::getContainerAttributes('textarea', $attributes) . '>';
+echo '<label>';
+echo Utilities::getLabelElement($attributes);
+echo '<textarea  ' . Utilities::getElementAttributes($attributes) . '>' . htmlentities($value) . '</textarea>';
+echo '</label>';
+//$js = file_get_contents(__DIR__ . '/../dev/api.textarea.js');
+$js = include __DIR__ . '/textarea.api.min.js.php';
+echo '<script>' . $js . '</script>';
 echo '</div>';
 echo '</body></html>';
