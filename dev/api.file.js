@@ -5,7 +5,7 @@
  * Free to use under the MIT license.
  */
 
-var elements = document.body.querySelectorAll("[data-form-element-type='image']");
+var elements = document.body.querySelectorAll("[data-form-element-type='file']");
 for (var i = 0; i < elements.length; i++) {
     (function (element) {
         if (typeof element.dataFormAPISet !== 'undefined') {
@@ -32,20 +32,15 @@ for (var i = 0; i < elements.length; i++) {
         var fileInput = inputs[0];
         var valueInput = inputs[1];
 
-        var updatePreviewImage = function () {
+        var updateText = function () {
             var selectedFilesCount = fileInput.files.length;
             if (selectedFilesCount === 0) {
-                previewLabel.style.backgroundImage = '';
                 previewLabel.firstChild.innerText = valueInput.value.length === 0 ? 'CHOOSE_TEXT_TO_REPLACE' : '';
                 clearButton.style.display = 'none';
             } else {
-                previewLabel.firstChild.innerText = '';
+                var file = fileInput.files[0];
+                previewLabel.firstChild.innerText = file.name;
                 clearButton.style.display = 'inline-block';
-                var reader = new FileReader();
-                reader.addEventListener("load", function () {
-                    previewLabel.style.backgroundImage = 'url(' + reader.result + ')';
-                }, false);
-                reader.readAsDataURL(fileInput.files[0]);
             }
         };
 
@@ -54,12 +49,12 @@ for (var i = 0; i < elements.length; i++) {
             event.preventDefault();
             fileInput.value = '';
             valueInput.value = '';
-            updatePreviewImage();
+            updateText();
         }, false);
 
-        fileInput.addEventListener('change', updatePreviewImage, false);
+        fileInput.addEventListener('change', updateText, false);
 
-        valueInput.addEventListener('change', updatePreviewImage, false);
+        valueInput.addEventListener('change', updateText, false);
 
     })(elements[i]);
 }
