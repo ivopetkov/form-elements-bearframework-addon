@@ -1,7 +1,11 @@
 {
     "name": "ivopetkov/form-elements-bearframework-addon",
     "description": "Form elements addon for Bear Framework",
-    "keywords": ["form", "addon", "Bear Framework"],
+    "keywords": [
+        "form",
+        "addon",
+        "Bear Framework"
+    ],
     "homepage": "https://github.com/ivopetkov/form-elements-bearframework-addon",
     "license": "MIT",
     "authors": [
@@ -14,14 +18,15 @@
     "require": {
         "php": ">=7.1.0",
         "bearframework/bearframework": "1.*",
-        "bearframework/localization-addon": "0.2.*",
-        "ivopetkov/html-server-components-bearframework-addon": "0.7.*|0.8.*"
+        "bearframework/localization-addon": "1.*",
+        "ivopetkov/html-server-components-bearframework-addon": "1.*"
     },
     "require-dev": {
-        "bearframework/addon-tests": "0.3.*",
-        "phpunit/phpunit": "7.*"
+        "bearframework/addon-tests": "1.*"
     },
     "autoload": {
-        "files": ["autoload.php"]
+        "files": [
+            "autoload.php"
+        ]
     }
 }
