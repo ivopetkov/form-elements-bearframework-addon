@@ -33,7 +33,9 @@ ivoPetkov.bearFrameworkAddons.formElementsSubmitButton = ivoPetkov.bearFramework
             if (waitingClass.length > 0) {
                 button.setAttribute('class', waitingClass);
             }
-            button.innerText = waitingText;
+            if (waitingText.length > 0) {
+                button.innerText = waitingText;
+            }
             button.setAttribute('disabled', 'true');
             button.style.cursor = 'default';
         };
