@@ -19,6 +19,14 @@ for (var i = 0; i < elements.length; i++) {
             return input.checked;
         };
 
+        element.getValue = function () {
+            return input.value;
+        };
+
+        element.setValue = function (value) {
+            input.value = value;
+        };
+
         element.check = function () {
             input.checked = true;
         };
