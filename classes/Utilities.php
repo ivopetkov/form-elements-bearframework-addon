@@ -28,6 +28,9 @@ class Utilities
         if (isset($attributes['visibility'])) {
             $containerAttributes['data-form-element-visibility'] = $attributes['visibility'] === 'true' ? '1' : '0';
         }
+        if (isset($attributes['style'])) {
+            $containerAttributes['style'] = $attributes['style'];
+        }
         return self::getAttributesString($containerAttributes);
     }
 
@@ -42,6 +45,9 @@ class Utilities
         }
         if (isset($elementAttributes['visibility'])) {
             unset($elementAttributes['visibility']);
+        }
+        if (isset($elementAttributes['style'])) {
+            unset($elementAttributes['style']);
         }
         return self::getAttributesString($elementAttributes);
     }
