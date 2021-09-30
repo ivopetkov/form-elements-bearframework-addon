@@ -62,6 +62,6 @@ class Utilities
 
     static function getDefaultStyles(): string
     {
-        return '[data-form-element-type][data-form-element-visibility="0"]{display:none}';
+        return '[data-form-element-type][data-form-element-visibility="0"]{display:none !important;}'; // !important is needed because the element may have style="display:..."
     }
 }
