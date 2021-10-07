@@ -29,11 +29,9 @@ if (isset($attributes['name'])) {
 $elementID = 'fe' . md5(uniqid());
 $attributes['data-form-element-component'] = 'button';
 
+$labelStyle = '';
 if (strlen($valuePreviewUrl) > 0) {
-    if (!isset($attributes['style'])) {
-        $attributes['style'] = '';
-    }
-    $attributes['style'] .= 'background-image:url(' . $valuePreviewUrl . ');';
+    $labelStyle = 'background-image:url(' . $valuePreviewUrl . ');';
 }
 
 $browseText = __('ivopetkov.form-element.image.Choose');
@@ -58,7 +56,7 @@ if ($labelElement !== '') {
 }
 echo '<div>';
 echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"><span>&#10010;</span></span>';
-echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '"><span>' . htmlspecialchars(strlen($value) > 0 ? (strlen($valuePreviewUrl) === 0 ? $value : '') : $browseText) . '</span></label>';
+echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '" style="' . htmlentities($labelStyle) . '"><span>' . htmlspecialchars(strlen($value) > 0 ? (strlen($valuePreviewUrl) === 0 ? $value : '') : $browseText) . '</span></label>';
 echo '<input name="' . htmlentities($name) . '_files" id="' . htmlentities($elementID) . '" type="file" accept=".png,.jpg,.jpeg,.gif"/>';
 echo '<input name="' . htmlentities($name) . '" value="' . htmlentities($value) . '" type="hidden"/>';
 echo '</div>';
