@@ -43,6 +43,9 @@ class Utilities
         if (isset($elementAttributes['label'])) {
             unset($elementAttributes['label']);
         }
+        if (isset($elementAttributes['labelhtml'])) {
+            unset($elementAttributes['labelhtml']);
+        }
         if (isset($elementAttributes['visibility'])) {
             unset($elementAttributes['visibility']);
         }
@@ -56,6 +59,8 @@ class Utilities
     {
         if (isset($attributes['label'])) {
             return '<span data-form-element-component="label">' . htmlspecialchars($attributes['label']) . '</span>';
+        }elseif (isset($attributes['labelhtml'])) {
+            return '<span data-form-element-component="label">' . $attributes['labelhtml'] . '</span>';
         }
         return '';
     }
