@@ -20,15 +20,37 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.check = function () {
-            input.checked = true;
+            if (!input.checked) {
+                input.checked = true;
+                input.dispatchEvent(new Event('change', { 'bubbles': true }));
+            }
         };
 
         element.uncheck = function () {
-            input.checked = false;
+            if (input.checked) {
+                input.checked = false;
+                input.dispatchEvent(new Event('change', { 'bubbles': true }));
+            }
         };
 
         element.setVisibility = function (visible) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };
+
+        element.querySelector('[data-form-element-component="label"]').addEventListener('keydown', function (e) {
+            if (e.keyCode === 32) {
+                e.preventDefault();
+                if (element.isChecked()) {
+                    element.uncheck();
+                } else {
+                    element.check();
+                }
+            }
+        });
+
+        input.focus = function () {
+            input.nextSibling.focus();
+        };
+
     })(elements[i]);
 }
