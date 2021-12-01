@@ -16,9 +16,11 @@ class FormElementsTest extends BearFramework\AddonTests\PHPUnitTestCase
     /**
      * 
      */
-    public function testForm()
+    public function testFormElements()
     {
-        $this->assertTrue(true);
+        $app = $this->getApp();
+        $html = $app->components->process('<form-element-textbox label="Test1" value="value1">');
+        $this->assertTrue(strpos($html, '<input value="value1" data-form-element-component="input" type="text">') !== false);
+        $this->assertTrue(strpos($html, '<span data-form-element-component="label">Test1</span>') !== false);
     }
-
 }
