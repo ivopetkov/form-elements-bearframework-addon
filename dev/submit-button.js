@@ -49,7 +49,9 @@ ivoPetkov.bearFrameworkAddons.formElementsSubmitButton = ivoPetkov.bearFramework
                 button.innerText = button.originalInnerText;
                 button.removeAttribute('disabled');
                 button.style.cursor = 'pointer';
-                button.setAttribute('class', button.originalClass);
+                if (button.originalClass !== null) {
+                    button.setAttribute('class', button.originalClass);
+                }
             }
         };
 
