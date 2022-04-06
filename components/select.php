@@ -30,6 +30,7 @@ echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('select', $attributes) . '>';
 echo '<label>';
 echo Utilities::getLabelElement($attributes);
+echo Utilities::getHintElement($attributes);
 echo '<select ' . Utilities::getElementAttributes($attributes) . '>' . $options . '</select>';
 echo '</label>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.select.js');

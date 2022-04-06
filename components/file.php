@@ -49,6 +49,7 @@ if ($labelElement !== '') {
     echo $labelElement;
     echo '</label>';
 }
+echo Utilities::getHintElement($attributes);
 echo '<div>';
 echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"><span>&#10010;</span></span>';
 echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '"><span>' . htmlspecialchars(strlen($value) > 0 ? (strlen($valueText) === 0 ? $value : $valueText) : $browseText) . '</span></label>';

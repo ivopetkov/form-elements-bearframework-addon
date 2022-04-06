@@ -66,10 +66,21 @@ class Utilities
 
     static function getLabelElement(array $attributes): string
     {
+        $componentName = isset($attributes['form-elements-internal-component-name']) ? $attributes['form-elements-internal-component-name'] : 'label';
         if (isset($attributes['label'])) {
             return '<span data-form-element-component="' . htmlentities($componentName) . '">' . htmlspecialchars($attributes['label']) . '</span>';
         } elseif (isset($attributes['labelhtml'])) {
             return '<span data-form-element-component="' . htmlentities($componentName) . '">' . $attributes['labelhtml'] . '</span>';
+        }
+        return '';
+    }
+
+    static function getHintElement(array $attributes): string
+    {
+        if (isset($attributes['hint'])) {
+            return '<span data-form-element-component="hint">' . htmlspecialchars($attributes['hint']) . '</span>';
+        } elseif (isset($attributes['hinthtml'])) {
+            return '<span data-form-element-component="hint">' . $attributes['hinthtml'] . '</span>';
         }
         return '';
     }

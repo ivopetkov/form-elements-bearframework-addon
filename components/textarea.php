@@ -24,6 +24,7 @@ echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('textarea', $attributes) . '>';
 echo '<label>';
 echo Utilities::getLabelElement($attributes);
+echo Utilities::getHintElement($attributes);
 echo '<textarea  ' . Utilities::getElementAttributes($attributes) . '>' . htmlentities($value) . '</textarea>';
 echo '</label>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.textarea.js');
