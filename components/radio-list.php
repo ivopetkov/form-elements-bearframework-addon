@@ -41,7 +41,7 @@ echo '<div ' . Utilities::getContainerAttributes('radio-list', $attributes) . ' 
 echo '<input type="hidden" name="' . htmlentities($elementName) . '" value="' . htmlentities($value) . '">';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
-echo '<div data-form-element-component="radio-list-options>';
+echo '<div data-form-element-component="radio-list-options">';
 foreach ($options as $option) {
     $optionType = $option->getAttribute('type');
     $optionValue = $option->getAttribute('value');
