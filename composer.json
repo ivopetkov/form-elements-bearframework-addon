@@ -19,7 +19,8 @@
         "php": "7.1.*|7.2.*|7.3.*|7.4.*|8.0.*|8.1.*",
         "bearframework/bearframework": "1.*",
         "bearframework/localization-addon": "1.*",
-        "ivopetkov/html-server-components-bearframework-addon": "1.*"
+        "ivopetkov/html-server-components-bearframework-addon": "1.*",
+        "ivopetkov/html5-dom-document-php": "2.*"
     },
     "require-dev": {
         "bearframework/addon-tests": "1.*"

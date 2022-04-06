@@ -71,7 +71,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         var setTabIndex = function (input, value) {
-            input.nextSibling.setAttribute('tabindex', value);
+            input.setAttribute('tabindex', value);
         };
 
         input.addEventListener('change', function () {

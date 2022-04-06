@@ -21,7 +21,9 @@ class Utilities
     static function getContainerAttributes(string $type, array $attributes): string
     {
         $containerAttributes = [];
-        $containerAttributes['data-form-element-type'] = $type;
+        if ($type !== '') { // it's empty in radio-list and chechbox-list
+            $containerAttributes['data-form-element-type'] = $type;
+        }
         if (isset($attributes['id'])) {
             $containerAttributes['id'] = $attributes['id'];
         }
@@ -52,15 +54,22 @@ class Utilities
         if (isset($elementAttributes['style'])) {
             unset($elementAttributes['style']);
         }
+        $temp = [];
+        foreach ($elementAttributes as $name => $value) {
+            if (strpos($name, 'form-elements-internal-') === false) {
+                $temp[$name] =  $value;
+            }
+        }
+        $elementAttributes = $temp;
         return self::getAttributesString($elementAttributes);
     }
 
     static function getLabelElement(array $attributes): string
     {
         if (isset($attributes['label'])) {
-            return '<span data-form-element-component="label">' . htmlspecialchars($attributes['label']) . '</span>';
-        }elseif (isset($attributes['labelhtml'])) {
-            return '<span data-form-element-component="label">' . $attributes['labelhtml'] . '</span>';
+            return '<span data-form-element-component="' . htmlentities($componentName) . '">' . htmlspecialchars($attributes['label']) . '</span>';
+        } elseif (isset($attributes['labelhtml'])) {
+            return '<span data-form-element-component="' . htmlentities($componentName) . '">' . $attributes['labelhtml'] . '</span>';
         }
         return '';
     }
