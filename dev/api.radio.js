@@ -15,20 +15,32 @@ for (var i = 0; i < elements.length; i++) {
 
         var input = element.querySelector('input');
 
-        input.getFormElementContainer = function(){
+        input.getFormElementContainer = function () {
             return element;
+        };
+
+        element.getValue = function () {
+            if (element.isChecked()) {
+                return input.value;
+            }
+            return null;
+        };
+
+        element.setValue = function (value) {
+            var isChecked = element.isChecked();
+            if (value === true || value === 1 || value === '1') {
+                if (!isChecked) {
+                    element.check();
+                }
+            } else {
+                if (isChecked) {
+                    element.uncheck();
+                }
+            }
         };
 
         element.isChecked = function () {
             return input.checked;
-        };
-
-        element.getValue = function () {
-            return input.value;
-        };
-
-        element.setValue = function (value) {
-            input.value = value;
         };
 
         element.check = function () {
