@@ -8,53 +8,165 @@
 var elements = document.body.querySelectorAll("[data-form-element-type='file']");
 for (var i = 0; i < elements.length; i++) {
     (function (element) {
-        if (typeof element.dataFormAPISet !== 'undefined') {
+        if (typeof element.dataFormElementAPISet !== 'undefined') {
             return;
         }
-        element.dataFormAPISet = true;
+        element.dataFormElementAPISet = true;
+
+        var clearButton = element.querySelector("[data-form-element-component='clear-button']");
+        var textElement = element.querySelector("[data-form-element-component='text']");
+
+        var input = element.querySelector("input");
+
+        input.getFormElementContainer = function () {
+            return element;
+        };
+
+        var filesUploadValues = [];
+
+        var getUploadedFileValue = function (file) {
+            for (var j = 0; j < filesUploadValues.length; j++) {
+                var fileUploadValue = filesUploadValues[j];
+                if (fileUploadValue[0] === file) {
+                    return fileUploadValue[1];
+                }
+            }
+            return null;
+        };
 
         element.getValue = function () {
-            // todo
+            var files = input.files;
+            var filesCount = files.length;
+            if (filesCount === 0) {
+                return input.getAttribute('data-value');
+            }
+            var value = [];
+            for (var i = 0; i < filesCount; i++) {
+                var file = files[i];
+                var uploadedFileValue = getUploadedFileValue(file);
+                if (uploadedFileValue !== null) {
+                    value.push(uploadedFileValue);
+                } else {
+                    value.push({
+                        value: file.name,
+                        filename: null,
+                        size: file.size,
+                        type: file.type,
+                    });
+                }
+            }
+            return JSON.stringify(value);
         };
 
         element.setValue = function (value) {
-            // todo
+            if (value === '') {
+                input.value = ''; // clear the files
+                input.setAttribute('data-value', '');
+                input.dispatchEvent(new Event('change'));
+            } else {
+                throw new Error('Only empty string allowed!');
+            }
+        };
+
+        element.hasPendingUploads = function () {
+            var files = input.files;
+            var filesCount = files.length;
+            for (var i = 0; i < filesCount; i++) {
+                var uploadedFileValue = getUploadedFileValue(files[i]);
+                if (!uploadedFileValue) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        element.upload = function (uploadHandler, onSuccess, onAbort, onFail, onProgress) {
+            var files = input.files;
+            var filesCount = files.length;
+            var pendingFileUploadsCount = 0;
+            var uploadsProgress = [];
+            for (var i = 0; i < filesCount; i++) {
+                var file = files[i];
+                var uploadedFileValue = getUploadedFileValue(file);
+                if (uploadedFileValue === null) {
+                    uploadsProgress[i] = 0;
+                    pendingFileUploadsCount++;
+                } else {
+                    uploadsProgress[i] = 100;
+                }
+            }
+            var callOnProgress = function () {
+                if (typeof onProgress !== 'undefined') {
+                    var total = 0;
+                    for (var i = 0; i < filesCount; i++) {
+                        total += uploadsProgress[i];
+                    }
+                    onProgress(total / filesCount);
+                }
+            }
+            var uploadNextFile = function (index) {
+                if (typeof files[index] === 'undefined') {
+                    return;
+                }
+                var file = files[index];
+                var uploadedFileValue = getUploadedFileValue(file);
+                if (uploadedFileValue === null) {
+                    uploadHandler(file,
+                        function (value) { // on success
+                            uploadNextFile(index + 1);
+                            pendingFileUploadsCount--;
+                            filesUploadValues.push([file, value]);
+                            if (pendingFileUploadsCount === 0) {
+                                onSuccess();
+                            }
+                        },
+                        function () { // on abort
+                            if (typeof onAbort !== 'undefined') {
+                                onAbort();
+                            }
+                        },
+                        function () { // on fail
+                            if (typeof onFail !== 'undefined') {
+                                onFail();
+                            }
+                        },
+                        function (progress) { // on progress
+                            uploadsProgress[index] = progress;
+                            callOnProgress();
+                        }
+                    );
+                }
+            };
+            uploadNextFile(0);
         };
 
         element.setVisibility = function (visible) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };
 
-        var clearButton = element.querySelector("[data-form-element-component='clear-button']");
-        var previewLabel = clearButton.nextSibling;
+        clearButton.addEventListener('click', function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.setValue('');
+        }, false);
 
-        var inputs = element.querySelectorAll("input");
-        var fileInput = inputs[0];
-        var valueInput = inputs[1];
-
-        var updateText = function () {
-            var selectedFilesCount = fileInput.files.length;
+        var updateUI = function () {
+            var selectedFilesCount = input.files.length;
             if (selectedFilesCount === 0) {
-                previewLabel.firstChild.innerText = valueInput.value.length === 0 ? 'CHOOSE_TEXT_TO_REPLACE' : '';
+                textElement.innerText = element.getValue().length === 0 ? 'CHOOSE_TEXT_TO_REPLACE' : '';
                 clearButton.style.display = 'none';
             } else {
-                var file = fileInput.files[0];
-                previewLabel.firstChild.innerText = file.name;
+                if (selectedFilesCount === 1) {
+                    var text = input.files[0].name;
+                } else {
+                    var text = 'SELECTED_FILES_COUNT_TEXT_TO_REPLACE'.replace('%s', selectedFilesCount);
+                }
+                textElement.innerText = text;
                 clearButton.style.display = 'inline-block';
             }
         };
 
-        clearButton.addEventListener('click', function (event) {
-            event.stopPropagation();
-            event.preventDefault();
-            fileInput.value = '';
-            valueInput.value = '';
-            updateText();
-        }, false);
-
-        fileInput.addEventListener('change', updateText, false);
-
-        valueInput.addEventListener('change', updateText, false);
+        input.addEventListener('change', updateUI, false);
 
     })(elements[i]);
 }

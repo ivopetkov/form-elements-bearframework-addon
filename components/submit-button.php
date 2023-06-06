@@ -37,7 +37,7 @@ $attributes['data-form-element-component'] = 'button';
 
 echo '<html><head>';
 echo '<style>';
-echo '[data-form-element-type="submit-button"] [data-form-element-component="button"]{cursor:pointer;user-select:none;-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;}';
+echo '[data-form-element-type="submit-button"] [data-form-element-component="button"]{cursor:pointer;user-select:none;-moz-user-select:none;-webkit-user-select:none;}';
 echo Utilities::getDefaultStyles();
 echo '</style>';
 //$js = file_get_contents(__DIR__ . '/../dev/submit-button.js');

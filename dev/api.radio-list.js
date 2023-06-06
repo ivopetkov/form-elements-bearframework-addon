@@ -8,13 +8,17 @@
 var elements = document.body.querySelectorAll("[data-form-element-type='radio-list']");
 for (var i = 0; i < elements.length; i++) {
     (function (element) {
-        if (typeof element.dataFormAPISet !== 'undefined') {
+        if (typeof element.dataFormElementAPISet !== 'undefined') {
             return;
         }
-        element.dataFormAPISet = true;
+        element.dataFormElementAPISet = true;
 
         var input = element.querySelector('input[type="hidden"]');
         var radios = element.querySelectorAll('input[type="radio"]');
+
+        input.getFormElementContainer = function(){
+            return element;
+        };
 
         element.getValue = function () {
             return input.value;

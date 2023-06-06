@@ -8,12 +8,16 @@
 var elements = document.body.querySelectorAll("[data-form-element-type='radio']");
 for (var i = 0; i < elements.length; i++) {
     (function (element) {
-        if (typeof element.dataFormAPISet !== 'undefined') {
+        if (typeof element.dataFormElementAPISet !== 'undefined') {
             return;
         }
-        element.dataFormAPISet = true;
+        element.dataFormElementAPISet = true;
 
         var input = element.querySelector('input');
+
+        input.getFormElementContainer = function(){
+            return element;
+        };
 
         element.isChecked = function () {
             return input.checked;

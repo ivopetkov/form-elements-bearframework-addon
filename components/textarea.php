@@ -19,7 +19,10 @@ if (isset($attributes['value'])) {
 $attributes['data-form-element-component'] = 'textarea';
 
 echo '<html><head>';
-echo '<style>[data-form-element-type="textarea"] textarea{resize:none;}' . Utilities::getDefaultStyles() . '</style>';
+echo '<style>'
+    . Utilities::getDefaultStyles()
+    . '[data-form-element-type="textarea"] textarea{resize:none;}'
+    . '</style>';
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('textarea', $attributes) . '>';
 echo '<label>';
