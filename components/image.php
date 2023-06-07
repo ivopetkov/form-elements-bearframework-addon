@@ -39,7 +39,7 @@ $chooseText = __('ivopetkov.form-element.image.Choose');
 echo '<html><head>';
 echo '<style>'
     . Utilities::getDefaultStyles()
-    . '[data-form-element-type="image"] [data-form-element-component="button"]{cursor:pointer;overflow:hidden;display:inline-block;position:relative;background-size:contain;}' // needed for the absolute positioned clear button
+    . '[data-form-element-type="image"] [data-form-element-component="button"]{cursor:pointer;overflow:hidden;display:inline-block;position:relative;background-size:cover;background-position:center;}' // needed for the absolute positioned clear button
     . '[data-form-element-type="image"] [data-form-element-component="text"]{display:block;width:100%;height:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:inherit;box-sizing:border-box;padding-right:42px;}'
     . '[data-form-element-type="image"] [data-form-element-component="clear-button"]{cursor:pointer;position:absolute;right:0;top:0;width:42px;height:42px;overflow:hidden;user-select:none;-moz-user-select:none;-webkit-user-select:none;}'
     . '[data-form-element-type="image"] input{display:none;}'
