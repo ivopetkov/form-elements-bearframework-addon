@@ -11,8 +11,13 @@ use IvoPetkov\BearFrameworkAddons\FormElements\Utilities;
 
 $attributes = $component->getAttributes();
 
+$inputType = (string)$component->getAttribute('inputType');
+if($inputType !== null){
+    unset($attributes['inputtype']);
+}
+
 $attributes['data-form-element-component'] = 'input';
-$attributes['type'] = 'text';
+$attributes['type'] = $inputType === '' ? 'text' : $inputType;
 
 echo '<html><head>';
 echo '<style>' . Utilities::getDefaultStyles() . '</style>';
