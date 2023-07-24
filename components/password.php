@@ -22,6 +22,7 @@ echo '<label>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
 echo '<input ' . Utilities::getElementAttributes($attributes) . '/>';
+echo Utilities::getHintAfterElement($attributes);
 echo '</label>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.password.js');
 $js = include __DIR__ . '/password.api.min.js.php';

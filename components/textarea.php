@@ -29,6 +29,7 @@ echo '<label>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
 echo '<textarea  ' . Utilities::getElementAttributes($attributes) . '>' . htmlentities($value) . '</textarea>';
+echo Utilities::getHintAfterElement($attributes);
 echo '</label>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.textarea.js');
 $js = include __DIR__ . '/textarea.api.min.js.php';

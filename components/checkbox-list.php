@@ -57,6 +57,7 @@ foreach ($options as $option) {
     echo '<form-element-checkbox name="' . htmlentities($group) . '"' . $checkedAttribute . $textAttribute . ' value="' . htmlentities($option->getAttribute('value')) . '" form-elements-internal-attribute-type="" form-elements-internal-container-attribute="' . htmlentities('data-form-element-component="checkbox-list-option"') . '" form-elements-internal-attribute-input="checkbox-list-option-input" form-elements-internal-attribute-label="checkbox-list-option-label"/>';
 }
 echo '</div>';
+echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.checkbox-list.js');
 $js = include __DIR__ . '/checkbox-list.api.min.js.php';
 echo '<script>' . $js . '</script>';

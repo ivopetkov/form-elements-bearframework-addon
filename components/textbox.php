@@ -12,7 +12,7 @@ use IvoPetkov\BearFrameworkAddons\FormElements\Utilities;
 $attributes = $component->getAttributes();
 
 $inputType = (string)$component->getAttribute('inputType');
-if($inputType !== null){
+if ($inputType !== null) {
     unset($attributes['inputtype']);
 }
 
@@ -27,6 +27,7 @@ echo '<label>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
 echo '<input ' . Utilities::getElementAttributes($attributes) . '/>';
+echo Utilities::getHintAfterElement($attributes);
 echo '</label>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.textbox.js');
 $js = include __DIR__ . '/textbox.api.min.js.php';

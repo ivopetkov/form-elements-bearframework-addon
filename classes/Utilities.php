@@ -48,6 +48,18 @@ class Utilities
         if (isset($elementAttributes['labelhtml'])) {
             unset($elementAttributes['labelhtml']);
         }
+        if (isset($elementAttributes['hint'])) {
+            unset($elementAttributes['hint']);
+        }
+        if (isset($elementAttributes['hinthtml'])) {
+            unset($elementAttributes['hinthtml']);
+        }
+        if (isset($elementAttributes['hintafter'])) {
+            unset($elementAttributes['hintafter']);
+        }
+        if (isset($elementAttributes['hintafterhtml'])) {
+            unset($elementAttributes['hintafterhtml']);
+        }
         if (isset($elementAttributes['visibility'])) {
             unset($elementAttributes['visibility']);
         }
@@ -81,6 +93,16 @@ class Utilities
             return '<span data-form-element-component="hint">' . htmlspecialchars($attributes['hint']) . '</span>';
         } elseif (isset($attributes['hinthtml'])) {
             return '<span data-form-element-component="hint">' . $attributes['hinthtml'] . '</span>';
+        }
+        return '';
+    }
+
+    static function getHintAfterElement(array $attributes): string
+    {
+        if (isset($attributes['hintafter'])) {
+            return '<span data-form-element-component="hint-after">' . htmlspecialchars($attributes['hintafter']) . '</span>';
+        } elseif (isset($attributes['hintafterhtml'])) {
+            return '<span data-form-element-component="hint-after">' . $attributes['hintafterhtml'] . '</span>';
         }
         return '';
     }

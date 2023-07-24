@@ -58,6 +58,7 @@ foreach ($options as $option) {
     echo '<form-element-radio name="' . htmlentities($group) . '"' . $checkedAttribute . $textAttribute . ' value="' . htmlentities($option->getAttribute('value')) . '" form-elements-internal-attribute-type="" form-elements-internal-container-attribute="' . htmlentities('data-form-element-component="radio-list-option"') . '" form-elements-internal-attribute-input="radio-list-option-input" form-elements-internal-attribute-label="radio-list-option-label"/>';
 }
 echo '</div>';
+echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.radio-list.js');
 $js = include __DIR__ . '/radio-list.api.min.js.php';
 echo '<script>' . $js . '</script>';

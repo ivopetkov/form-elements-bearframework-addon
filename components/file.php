@@ -55,6 +55,7 @@ echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($valu
 echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"></span>';
 echo '</label>';
 echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file"' . ($multiple ? ' multiple' : '') . '/>';
+echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.file.js');
 $js = include __DIR__ . '/file.api.min.js.php';
 $js = str_replace('CHOOSE_TEXT_TO_REPLACE', $chooseText, $js);
