@@ -48,7 +48,7 @@ echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('image', $attributes) . '>';
 $labelElement = Utilities::getLabelElement($attributes);
 if ($labelElement !== '') {
-    echo '<label for="' . htmlentities($elementID) . '">';
+    echo '<label>';
     echo $labelElement;
     echo '</label>';
 }
