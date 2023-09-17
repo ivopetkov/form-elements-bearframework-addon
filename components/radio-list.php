@@ -25,6 +25,7 @@ if (isset($attributes['value'])) {
     $value = (string)$attributes['value'];
     unset($attributes['value']);
 }
+
 $group = 'ferl' . (strlen($elementName) > 0 ? md5($elementName) : md5($component->outerHTML));
 $optionsValues = [];
 foreach ($options as $option) {

@@ -10,6 +10,8 @@
 BearFramework\Addons::register('ivopetkov/form-elements-bearframework-addon', __DIR__, [
     'require' => [
         'bearframework/localization-addon',
+        'ivopetkov/tooltip-js-bearframework-addon',
+        'ivopetkov/client-packages-bearframework-addon',
         'ivopetkov/html-server-components-bearframework-addon'
     ]
 ]);

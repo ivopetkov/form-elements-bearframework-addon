@@ -45,6 +45,6 @@ $js = include __DIR__ . '/submit-button.min.js.php';
 echo '<script>' . $js . '</script>';
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('submit-button', $attributes) . '>';
-echo '<span ' . Utilities::getElementAttributes($attributes) . ' onclick="' . htmlentities($onClick) . '" role="button" tabindex="0" onkeydown="if(event.keyCode===13){this.click();}">' . htmlspecialchars($text) . '</span>';
+echo '<span ' . Utilities::getElementAttributes($attributes) . ' onclick="' . htmlentities($onClick) . '" role="button" tabindex="0">' . htmlspecialchars($text) . '</span>';
 echo '</div>';
 echo '</body></html>';

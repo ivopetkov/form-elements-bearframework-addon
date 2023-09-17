@@ -36,4 +36,5 @@ $app->components
     ->addTag('form-element-textarea', 'file:' . $context->dir . '/components/textarea.php')
     ->addTag('form-element-textbox', 'file:' . $context->dir . '/components/textbox.php')
     ->addTag('form-element-radio-list', 'file:' . $context->dir . '/components/radio-list.php')
-    ->addTag('form-element-checkbox-list', 'file:' . $context->dir . '/components/checkbox-list.php');
+    ->addTag('form-element-checkbox-list', 'file:' . $context->dir . '/components/checkbox-list.php')
+    ->addTag('form-element-datetime', 'file:' . $context->dir . '/components/datetime.php');

@@ -5,6 +5,8 @@
  * Free to use under the MIT license.
  */
 
+// The input's change event bubbles to the container
+
 var elements = document.body.querySelectorAll("[data-form-element-type='textbox']");
 for (var i = 0; i < elements.length; i++) {
     (function (element) {
@@ -15,11 +17,11 @@ for (var i = 0; i < elements.length; i++) {
 
         var input = element.querySelector('input');
 
-        input.getFormElementContainer = function(){
+        input.getFormElementContainer = function () {
             return element;
         };
 
-        element.getValue = function () {
+        element.getValue = function () { // Returns empty string if the input is empty
             return input.value;
         };
 

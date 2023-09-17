@@ -69,7 +69,7 @@ class Utilities
         $temp = [];
         foreach ($elementAttributes as $name => $value) {
             if (strpos($name, 'form-elements-internal-') === false) {
-                $temp[$name] =  $value;
+                $temp[$name] = $value;
             }
         }
         $elementAttributes = $temp;

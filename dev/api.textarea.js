@@ -5,6 +5,8 @@
  * Free to use under the MIT license.
  */
 
+// The textarea's change event bubbles to the container
+
 var elements = document.body.querySelectorAll("[data-form-element-type='textarea']");
 for (var i = 0; i < elements.length; i++) {
     (function (element) {
@@ -13,18 +15,18 @@ for (var i = 0; i < elements.length; i++) {
         }
         element.dataFormElementAPISet = true;
 
-        var input = element.querySelector('textarea');
+        var textarea = element.querySelector('textarea');
 
-        input.getFormElementContainer = function(){
+        textarea.getFormElementContainer = function () {
             return element;
         };
 
-        element.getValue = function () {
-            return input.value;
+        element.getValue = function () {  // Returns empty string if the textarea is empty
+            return textarea.value;
         };
 
         element.setValue = function (value) {
-            input.value = value;
+            textarea.value = value;
         };
 
         element.setVisibility = function (visible) {

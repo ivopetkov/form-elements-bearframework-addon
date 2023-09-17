@@ -5,6 +5,24 @@
  * Free to use under the MIT license.
  */
 
+var elements = document.body.querySelectorAll("[data-form-element-type='submit-button']");
+for (var i = 0; i < elements.length; i++) {
+    (function (element) {
+        if (typeof element.dataFormElementAPISet !== 'undefined') {
+            return;
+        }
+        element.dataFormElementAPISet = true;
+
+        var button = element.querySelector('[data-form-element-component="button"]');
+        button.addEventListener('keydown', function (event) {
+            if (event.keyCode === 13) {
+                button.click();
+            }
+        });
+
+    })(elements[i]);
+}
+
 var ivoPetkov = ivoPetkov || {};
 ivoPetkov.bearFrameworkAddons = ivoPetkov.bearFrameworkAddons || {};
 ivoPetkov.bearFrameworkAddons.formElementsSubmitButton = ivoPetkov.bearFrameworkAddons.formElementsSubmitButton || (function () {
