@@ -26,6 +26,17 @@ if (isset($attributes['name'])) {
     unset($attributes['name']);
 }
 
+$accept = (string) $component->accept;
+if (isset($attributes['accept'])) {
+    unset($attributes['accept']);
+}
+
+$maxSize = '';
+if (isset($attributes['maxsize'])) {
+    $maxSize = $attributes['maxsize'];
+    unset($attributes['maxsize']);
+}
+
 $multiple = (string)$component->multiple === 'true' || (string)$component->multiple === 'multiple';
 
 $elementID = 'fe' . md5(uniqid());
@@ -54,7 +65,7 @@ echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAtt
 echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($value) > 0 ? (strlen($valueText) === 0 ? $value : $valueText) : $chooseText) . '</span>';
 echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"></span>';
 echo '</label>';
-echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file"' . ($multiple ? ' multiple' : '') . '/>';
+echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file"' . ($multiple ? ' multiple' : '') . ' accept="' . htmlentities($accept) . '" data-form-element-data-max-size="' . $maxSize . '"/>';
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.file.js');
 $js = include __DIR__ . '/file.api.min.js.php';

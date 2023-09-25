@@ -18,6 +18,14 @@ for (var i = 0; i < elements.length; i++) {
 
         var input = element.querySelector("input");
 
+        var maxSize = input.getAttribute('data-form-element-data-max-size');
+        if (maxSize === '') {
+            maxSize = null;
+        }
+        if (maxSize !== null) {
+            maxSize = parseInt(maxSize);
+        }
+
         input.getFormElementContainer = function () {
             return element;
         };
@@ -81,12 +89,17 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.upload = function (uploadHandler, onSuccess, onAbort, onFail, onProgress) {
+
             var files = input.files;
             var filesCount = files.length;
             var pendingFileUploadsCount = 0;
             var uploadsProgress = [];
             for (var i = 0; i < filesCount; i++) {
                 var file = files[i];
+                if (maxSize !== null && file.size > maxSize) {
+                    onFail('The selected file is too big. Max allowed size is ' + Math.floor(maxSize / 1024 / 1024) + 'MB.');
+                    return;
+                }
                 var uploadedFileValue = getUploadedFileValue(file);
                 if (uploadedFileValue === null) {
                     uploadsProgress[i] = 0;
@@ -120,14 +133,14 @@ for (var i = 0; i < elements.length; i++) {
                                 onSuccess();
                             }
                         },
-                        function () { // on abort
+                        function (errorMessage) { // on abort
                             if (typeof onAbort !== 'undefined') {
-                                onAbort();
+                                onAbort(errorMessage);
                             }
                         },
-                        function () { // on fail
+                        function (errorMessage) { // on fail
                             if (typeof onFail !== 'undefined') {
-                                onFail();
+                                onFail(errorMessage);
                             }
                         },
                         function (progress) { // on progress
