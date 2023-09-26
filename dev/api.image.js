@@ -19,6 +19,13 @@ for (var i = 0; i < elements.length; i++) {
 
         var input = element.querySelector("input");
 
+        var maxSize = input.getAttribute('data-form-element-data-max-size');
+        if (maxSize === '') {
+            maxSize = null;
+        } else if (maxSize !== null) {
+            maxSize = parseInt(maxSize);
+        }
+
         input.getFormElementContainer = function () {
             return element;
         };
@@ -88,6 +95,10 @@ for (var i = 0; i < elements.length; i++) {
             var uploadsProgress = [];
             for (var i = 0; i < filesCount; i++) {
                 var file = files[i];
+                if (maxSize !== null && file.size > maxSize) {
+                    onFail(ivoPetkovBearFrameworkAddonsFormElementsImageGetText('ivopetkov.form-element.image.TooBig').replace('%s', ivoPetkovBearFrameworkAddonsFormElementsImageFormatBytes(maxSize)));
+                    return;
+                }
                 var uploadedFileValue = getUploadedFileValue(file);
                 if (uploadedFileValue === null) {
                     uploadsProgress[i] = 0;
@@ -168,7 +179,10 @@ for (var i = 0; i < elements.length; i++) {
             }
         };
 
-        input.addEventListener('change', updateUI, false);
+        input.addEventListener('change', function () {
+            updateUI();
+            setTimeout(updateUI, 1); // Needed for form.reset();
+        }, false);
 
     })(elements[i]);
 }

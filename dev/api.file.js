@@ -21,8 +21,7 @@ for (var i = 0; i < elements.length; i++) {
         var maxSize = input.getAttribute('data-form-element-data-max-size');
         if (maxSize === '') {
             maxSize = null;
-        }
-        if (maxSize !== null) {
+        } else if (maxSize !== null) {
             maxSize = parseInt(maxSize);
         }
 
@@ -97,7 +96,7 @@ for (var i = 0; i < elements.length; i++) {
             for (var i = 0; i < filesCount; i++) {
                 var file = files[i];
                 if (maxSize !== null && file.size > maxSize) {
-                    onFail('The selected file is too big. Max allowed size is ' + Math.floor(maxSize / 1024 / 1024) + 'MB.');
+                    onFail(ivoPetkovBearFrameworkAddonsFormElementsFileGetText('ivopetkov.form-element.file.TooBig').replace('%s', ivoPetkovBearFrameworkAddonsFormElementsFileFormatBytes(maxSize)));
                     return;
                 }
                 var uploadedFileValue = getUploadedFileValue(file);
@@ -179,7 +178,10 @@ for (var i = 0; i < elements.length; i++) {
             }
         };
 
-        input.addEventListener('change', updateUI, false);
+        input.addEventListener('change', function () {
+            updateUI();
+            setTimeout(updateUI, 1); // Needed for form.reset();
+        }, false);
 
     })(elements[i]);
 }

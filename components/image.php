@@ -7,7 +7,10 @@
  * Free to use under the MIT license.
  */
 
+use BearFramework\App;
 use IvoPetkov\BearFrameworkAddons\FormElements\Utilities;
+
+$app = App::get();
 
 $attributes = $component->getAttributes();
 
@@ -24,6 +27,12 @@ if (isset($attributes['valuepreviewurl'])) {
 $name = (string) $component->name;
 if (isset($attributes['name'])) {
     unset($attributes['name']);
+}
+
+$maxSize = '';
+if (isset($attributes['maxsize'])) {
+    $maxSize = $attributes['maxsize'];
+    unset($attributes['maxsize']);
 }
 
 $elementID = 'fe' . md5(uniqid());
@@ -44,6 +53,12 @@ echo '<style>'
     . '[data-form-element-type="image"] [data-form-element-component="clear-button"]{cursor:pointer;position:absolute;right:0;top:0;width:42px;height:42px;overflow:hidden;user-select:none;-moz-user-select:none;-webkit-user-select:none;}'
     . '[data-form-element-type="image"] input{display:none;}'
     . '</style>';
+
+echo '<script>'
+    . 'var ivoPetkovBearFrameworkAddonsFormElementsImageGetText=' . $app->localization->getGetTextJsFunction(['ivopetkov.form-element.image.TooBig']) . ';'
+    . 'var ivoPetkovBearFrameworkAddonsFormElementsImageFormatBytes=' . $app->localization->getFormatBytesJsFunction() . ';'
+    . '</script>';
+
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('image', $attributes) . '>';
 $labelElement = Utilities::getLabelElement($attributes);
@@ -57,7 +72,7 @@ echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAtt
 echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($value) > 0 ? (strlen($valuePreviewUrl) === 0 ? $value : '') : $chooseText) . '</span>';
 echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"></span>';
 echo '</label>';
-echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file" accept=".png,.jpg,.jpeg,.gif">';
+echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file" accept=".png,.jpg,.jpeg,.gif"' . ($maxSize !== '' ? ' data-form-element-data-max-size="' . $maxSize . '"' : '') . '>';
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.image.js');
 $js = include __DIR__ . '/image.api.min.js.php';

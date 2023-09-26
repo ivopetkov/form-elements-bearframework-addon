@@ -7,7 +7,10 @@
  * Free to use under the MIT license.
  */
 
+use BearFramework\App;
 use IvoPetkov\BearFrameworkAddons\FormElements\Utilities;
+
+$app = App::get();
 
 $attributes = $component->getAttributes();
 
@@ -29,6 +32,17 @@ if (isset($attributes['name'])) {
 $accept = (string) $component->accept;
 if (isset($attributes['accept'])) {
     unset($attributes['accept']);
+}
+if ($accept !== '') {
+    $tempAcceptTypes = [];
+    $acceptTypes = explode(',', $accept);
+    foreach ($acceptTypes as $acceptType) {
+        $acceptType = trim(trim($acceptType), '.');
+        if (isset($acceptType[0])) {
+            $tempAcceptTypes[] = '.' . $acceptType;
+        }
+    }
+    $accept = join(',', $tempAcceptTypes);
 }
 
 $maxSize = '';
@@ -52,6 +66,12 @@ echo '<style>'
     . '[data-form-element-type="file"] [data-form-element-component="clear-button"]{cursor:pointer;position:absolute;right:0;top:0;width:42px;height:42px;overflow:hidden;user-select:none;-moz-user-select:none;-webkit-user-select:none;}'
     . '[data-form-element-type="file"] input{display:none;}'
     . '</style>';
+
+echo '<script>'
+    . 'var ivoPetkovBearFrameworkAddonsFormElementsFileGetText=' . $app->localization->getGetTextJsFunction(['ivopetkov.form-element.file.TooBig']) . ';'
+    . 'var ivoPetkovBearFrameworkAddonsFormElementsFileFormatBytes=' . $app->localization->getFormatBytesJsFunction() . ';'
+    . '</script>';
+
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('file', $attributes) . '>';
 $labelElement = Utilities::getLabelElement($attributes);
@@ -65,7 +85,7 @@ echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAtt
 echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($value) > 0 ? (strlen($valueText) === 0 ? $value : $valueText) : $chooseText) . '</span>';
 echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"></span>';
 echo '</label>';
-echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file"' . ($multiple ? ' multiple' : '') . ' accept="' . htmlentities($accept) . '" data-form-element-data-max-size="' . $maxSize . '"/>';
+echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file"' . ($multiple ? ' multiple' : '') . ' accept="' . htmlentities($accept) . '"' . ($maxSize !== '' ? ' data-form-element-data-max-size="' . $maxSize . '"' : '') . '/>';
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.file.js');
 $js = include __DIR__ . '/file.api.min.js.php';
