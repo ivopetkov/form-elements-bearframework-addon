@@ -44,6 +44,7 @@ if (strlen($valuePreviewUrl) > 0) {
 }
 
 $chooseText = __('ivopetkov.form-element.image.Choose');
+$clearButtonTitle = __('ivopetkov.form-element.image.ClearButton');
 
 echo '<html><head>';
 echo '<style>'
@@ -68,9 +69,9 @@ if ($labelElement !== '') {
     echo '</label>';
 }
 echo Utilities::getHintElement($attributes);
-echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '" style="' . htmlentities($labelStyle) . '">';
+echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '" style="' . htmlentities($labelStyle) . '" tabindex="0">';
 echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($value) > 0 ? (strlen($valuePreviewUrl) === 0 ? $value : '') : $chooseText) . '</span>';
-echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"></span>';
+echo '<span data-form-element-component="clear-button" title="' . htmlentities($clearButtonTitle) . '" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';" tabindex="0"></span>';
 echo '</label>';
 echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file" accept=".png,.jpg,.jpeg,.gif"' . ($maxSize !== '' ? ' data-form-element-data-max-size="' . $maxSize . '"' : '') . '>';
 echo Utilities::getHintAfterElement($attributes);

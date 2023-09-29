@@ -43,9 +43,15 @@ class Utilities
             unset($elementAttributes['id']);
         }
         if (isset($elementAttributes['label'])) {
+            if (!isset($elementAttributes['aria-label'])) {
+                $elementAttributes['aria-label'] = $elementAttributes['label'];
+            }
             unset($elementAttributes['label']);
         }
         if (isset($elementAttributes['labelhtml'])) {
+            if (!isset($elementAttributes['aria-label'])) {
+                $elementAttributes['aria-label'] = strip_tags($elementAttributes['labelhtml']);
+            }
             unset($elementAttributes['labelhtml']);
         }
         if (isset($elementAttributes['hint'])) {

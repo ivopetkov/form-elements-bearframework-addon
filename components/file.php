@@ -57,6 +57,7 @@ $elementID = 'fe' . md5(uniqid());
 $attributes['data-form-element-component'] = 'button';
 
 $chooseText = __('ivopetkov.form-element.file.Choose');
+$clearButtonTitle = __('ivopetkov.form-element.file.ClearButton');
 
 echo '<html><head>';
 echo '<style>'
@@ -81,9 +82,9 @@ if ($labelElement !== '') {
     echo '</label>';
 }
 echo Utilities::getHintElement($attributes);
-echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '">';
+echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '" tabindex="0">';
 echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($value) > 0 ? (strlen($valueText) === 0 ? $value : $valueText) : $chooseText) . '</span>';
-echo '<span data-form-element-component="clear-button" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';"></span>';
+echo '<span data-form-element-component="clear-button" title="' . htmlentities($clearButtonTitle) . '" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';" tabindex="0"></span>';
 echo '</label>';
 echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file"' . ($multiple ? ' multiple' : '') . ' accept="' . htmlentities($accept) . '"' . ($maxSize !== '' ? ' data-form-element-data-max-size="' . $maxSize . '"' : '') . '/>';
 echo Utilities::getHintAfterElement($attributes);
