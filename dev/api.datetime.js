@@ -167,6 +167,15 @@ for (var i = 0; i < elements.length; i++) {
             };
         }
 
+        var getMinMaxDates = function () {
+            var minDate = input.getAttribute('min');
+            minDate = minDate !== null ? new Date(minDate) : null;
+
+            var maxDate = input.getAttribute('max');
+            maxDate = maxDate !== null ? new Date(maxDate) : null;
+            return [minDate, maxDate];
+        };
+
         var updatePicker = function () {
             var hasValue = input.value !== '';
 
@@ -216,11 +225,9 @@ for (var i = 0; i < elements.length; i++) {
                 clearButton.style.setProperty('pointer-events', hasValue ? 'auto' : 'none');
             }
 
-            var minDate = input.getAttribute('min');
-            minDate = minDate !== null ? new Date(minDate) : null;
-
-            var maxDate = input.getAttribute('max');
-            maxDate = maxDate !== null ? new Date(maxDate) : null;
+            var minMaxDates = getMinMaxDates();
+            var minDate = minMaxDates[0];
+            var maxDate = minMaxDates[1];
 
             var contextDateMonth = contextDate.getMonth();
 
@@ -391,6 +398,44 @@ for (var i = 0; i < elements.length; i++) {
         };
         if (isBlockType) {
             updatePicker();
+        }
+
+        element.showMonth = function (month, year) {
+            var newContextDate = new Date(contextDate.getTime());
+            var hasChange = false;
+            if (typeof month !== 'undefined') {
+                month = parseInt(month);
+                if (month >= 1 && month <= 12) {
+                    month--;
+                    if (newContextDate.getMonth() !== month) {
+                        newContextDate.setMonth(month);
+                        hasChange = true;
+                    }
+                }
+            }
+            if (showYear && typeof year !== 'undefined') {
+                year = parseInt(year);
+                if (year > 0) {
+                    if (newContextDate.getFullYear() !== year) {
+                        newContextDate.setFullYear(year);
+                        hasChange = true;
+                    }
+                }
+            }
+            var minMaxDates = getMinMaxDates();
+            var minDate = minMaxDates[0];
+            var maxDate = minMaxDates[1];
+            if (minDate !== null && minDate.getTime() > newContextDate.getTime()) {
+                newContextDate = minDate;
+                hasChange = true;
+            } else if (maxDate !== null && maxDate.getTime() < newContextDate.getTime()) {
+                newContextDate = maxDate;
+                hasChange = true;
+            }
+            if (hasChange) {
+                contextDate = newContextDate;
+                updatePicker();
+            }
         }
 
         input.getFormElementContainer = function () {
