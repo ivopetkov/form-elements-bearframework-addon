@@ -36,6 +36,14 @@ for (var i = 0; i < elements.length; i++) {
             });
         }
 
+        var getCurrentDateObject = function () {
+            var currentDate = input.getAttribute('currentDate');
+            if (currentDate !== null) {
+                return new Date(currentDate);
+            }
+            return new Date();
+        };
+
         var getValueParts = function (value) {
             var result = [];
             if (value !== null && typeof value !== 'undefined') {
@@ -57,7 +65,7 @@ for (var i = 0; i < elements.length; i++) {
             if (!showYear) {
                 value = value.replace('0000-', leapYear + '-');
             }
-            var date = value !== '' ? new Date(value) : new Date();
+            var date = value !== '' ? new Date(value) : getCurrentDateObject();
             if (!showYear) {
                 date.setFullYear(leapYear);
             }
@@ -215,7 +223,7 @@ for (var i = 0; i < elements.length; i++) {
                     if (input.value === '') {
                         return;
                     }
-                    contextDate = new Date();
+                    contextDate = getCurrentDateObject();
                     setValue('');
                     if (isButtonType) {
                         setTooltipVisiblity(false);
@@ -291,7 +299,7 @@ for (var i = 0; i < elements.length; i++) {
                 yearButton.innerText = formatDate(contextDate, ['year']);
                 makeTooltip(yearButton, 'y', 'years-tooltip', function (contentContainer, hideTooltip) {
                     contentContainer.setAttribute('data-form-element-component', 'years');
-                    var currentYear = (new Date()).getFullYear();
+                    var currentYear = (getCurrentDateObject()).getFullYear();
                     for (var i = currentYear - 200; i <= currentYear + 200; i++) {
                         var yearElement = document.createElement('div');
                         yearElement.setAttribute('data-form-element-component', 'year');
@@ -338,7 +346,7 @@ for (var i = 0; i < elements.length; i++) {
                 }
             }
 
-            var currentDateAsString = dateToString(new Date(), showYear);
+            var currentDateAsString = dateToString(getCurrentDateObject(), showYear);
             var valueParts = getValueParts(input.value);
 
             var dateRows = showYear ? 6 : 5;
@@ -437,6 +445,15 @@ for (var i = 0; i < elements.length; i++) {
                 updatePicker();
             }
         }
+
+        element.setCurrentDate = function (date) {
+            if (typeof date === "undefined" || date === null) {
+                input.removeAttribute('currentDate');
+            } else {
+                input.setAttribute('currentDate', date);
+            }
+            updatePicker();
+        };
 
         input.getFormElementContainer = function () {
             return element;
