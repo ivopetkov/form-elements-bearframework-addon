@@ -19,11 +19,23 @@ for (var i = 0; i < elements.length; i++) {
         var isButtonType = button !== null;
         var isBlockType = pickerContainer !== null;
 
-        var showTime = input.getAttribute('showTime') !== 'false'; // todo
-        var showYear = input.getAttribute('showYear') !== 'false';
-        var showClear = input.getAttribute('showClear') !== 'false';
-        var multiple = ['true', ''].indexOf(input.getAttribute('multiple')) !== -1;
-        var allowSelect = input.getAttribute('allowSelect') !== 'false';
+        var showDate = [null, 'true'].indexOf(input.getAttribute('showDate')) !== -1;
+        var showTime = ['true'].indexOf(input.getAttribute('showTime')) !== -1;
+        var showTimeDuration = ['true'].indexOf(input.getAttribute('showTimeDuration')) !== -1;
+        var showSeconds = ['true'].indexOf(input.getAttribute('showSeconds')) !== -1;
+        var showYear = [null, 'true'].indexOf(input.getAttribute('showYear')) !== -1;
+        var showClear = [null, 'true'].indexOf(input.getAttribute('showClear')) !== -1;
+        var showOK = ['true'].indexOf(input.getAttribute('showOK')) !== -1;
+        var multiple = ['', 'true'].indexOf(input.getAttribute('multiple')) !== -1;
+        var allowSelect = [null, 'true'].indexOf(input.getAttribute('allowSelect')) !== -1;
+
+        var hoursLabel = input.getAttribute('hoursLabel');
+        var minutesLabel = input.getAttribute('minutesLabel');
+        var secondsLabel = input.getAttribute('secondsLabel');
+
+        if (showTimeDuration) {
+            showTime = true;
+        }
 
         var formatDate = ivoPetkovBearFrameworkAddonsFormElementsDateTimeFormatDate;
         var leapYear = 2024;
@@ -44,63 +56,143 @@ for (var i = 0; i < elements.length; i++) {
             return new Date();
         };
 
-        var getValueParts = function (value) {
+        var getValueParts = function (value, skipTime) {
             var result = [];
             if (value !== null && typeof value !== 'undefined') {
                 var valueParts = value.split(';');
                 for (var i = 0; i < valueParts.length; i++) {
                     var valuePart = valueParts[i].trim();
                     if (valuePart.length > 0) {
-                        result.push(valuePart);
+                        if (skipTime) {
+                            var parsedDateValue = parseDateValue(valuePart);
+                            result.push(parsedDateValue[0]);
+                        } else {
+                            result.push(valuePart);
+                        }
                     }
                 }
             }
             return result;
-        }
+        };
+
+        var parseDateValue = (value) => { // 2000-10-10T10:20 (date + time)
+            if (value === undefined || value === null) {
+                value = '';
+            }
+            var parts = value.split('T');
+            var date = parts[0];
+            var time = typeof parts[1] !== 'undefined' ? parts[1] : '';
+            if (date.indexOf(':') !== -1) {
+                time = date;
+                date = '';
+            }
+            return [date, time];
+        };
+
+        var hasTime = function (value) {
+            var parts = parseDateValue(value);
+            return parts[1] !== '';
+        };
+
+        var getDateValueTimePart = function (value, index, defaultValue) {
+            var parts = parseDateValue(value);
+            if (parts[1] !== '') {
+                var parts2 = parts[1].split(':');
+                if (typeof parts2[index] !== 'undefined') {
+                    return parseInt(parts2[index]).toString(); // remove zeroes
+                }
+            }
+            return typeof defaultValue !== 'undefined' ? defaultValue : '';
+        };
 
         var getContextDateFromValue = function () {
-            var valueParts = getValueParts(input.value);
+            var valueParts = getValueParts(input.value, false);
             valueParts.sort().reverse();
             var value = valueParts.length > 0 ? valueParts[0] : '';
             if (!showYear) {
                 value = value.replace('0000-', leapYear + '-');
             }
+            if (value !== '' && !showDate) {
+                value = '1111-11-11T' + value;
+            }
             var date = value !== '' ? new Date(value) : getCurrentDateObject();
             if (!showYear) {
                 date.setFullYear(leapYear);
             }
-            return date;
+            var hours = 0;
+            if (showTime) {
+                hours = getDateValueTimePart(value, 0, 0);
+                date.setHours(hours > 23 ? 23 : hours);
+                date.setMinutes(getDateValueTimePart(value, 1, 0));
+                date.setSeconds(getDateValueTimePart(value, 2, 0));
+            }
+            return { date: date, hours: hours };
         };
 
         var contextDate = getContextDateFromValue();
 
         var changeContextDateMonth = (monthChange) => {
-            contextDate.setMonth(contextDate.getMonth() + monthChange);
+            contextDate.date.setMonth(contextDate.date.getMonth() + monthChange);
             if (!showYear) {
-                contextDate.setFullYear(leapYear);
+                contextDate.date.setFullYear(leapYear);
             }
             updatePicker();
         };
 
-        var dateToString = function (date, hasYear) {
-            return (hasYear ? date.getFullYear().toString() : '0000') + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
+        var dateToString = function (dateTime) {
+            var date = dateTime.date;
+            var result = '';
+            if (showDate) {
+                result += (showYear ? date.getFullYear().toString() : '0000') + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
+            }
+            if (showTime) {
+                if (date.getHours() > 0 || date.getMinutes() > 0 || date.getSeconds() > 0) {
+                    if (showDate) {
+                        result += 'T';
+                    }
+                    if (showTimeDuration) {
+                        result += dateTime.hours;
+                    } else {
+                        result += date.getHours().toString().padStart(2, '0');
+                    }
+                    result += ':' + date.getMinutes().toString().padStart(2, '0');
+                    if (showSeconds) {
+                        result += ':' + date.getSeconds().toString().padStart(2, '0');
+                    }
+                }
+            }
+            return result;
         };
 
-        var setValue = function (value) {
+        var setValue = function (value, updateButtonHTML, updatePickerHTML) {
             if (input.value !== value) {
                 input.value = value;
                 input.dispatchEvent(new Event('change', { 'bubbles': true }));
-                if (isButtonType) {
+                if (updateButtonHTML && isButtonType) {
                     updateButtonText();
                 }
-                updatePicker();
+                if (updatePickerHTML) {
+                    updatePicker();
+                }
             }
+        };
+
+        var setValueFromContextDate = function (updateButtonHTML, updatePickerHTML) {
+            setValue(dateToString(contextDate), updateButtonHTML, updatePickerHTML);
         };
 
         var removeFromArray = (array, value) => {
             return array.filter((v) => {
                 return v !== value;
             })
+        };
+
+        var fixTimeLength = function (time) { // 1:20 > 01:20
+            var parts = time.split(':');
+            for (var i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].padStart(2, '0');
+            }
+            return parts.join(':');
         };
 
         var tooltipID = null;
@@ -165,11 +257,29 @@ for (var i = 0; i < elements.length; i++) {
             });
 
             var updateButtonText = function () {
-                var valueParts = getValueParts(input.value);
+                var valueParts = getValueParts(input.value, false);
                 var textParts = [];
                 for (var i = 0; i < valueParts.length; i++) {
                     var valuePart = valueParts[i].trim();
-                    textParts.push(formatDate(valuePart, showYear ? ['date'] : ['monthDay', 'month']));
+                    var formatDateOptions = [];
+                    if (showDate) {
+                        if (showYear) {
+                            formatDateOptions.push('date');
+                        } else {
+                            formatDateOptions.push('monthDay');
+                            formatDateOptions.push('month');
+                        }
+                    }
+                    if (showTime || showTimeDuration) {
+                        if (showDate && valuePart.indexOf('T') === -1) {
+                        } else {
+                            formatDateOptions.push('time');
+                        }
+                        if (!showDate && valuePart !== '') {
+                            valuePart = '1111-11-11T' + fixTimeLength(valuePart) + (showSeconds ? '' : ':00');
+                        }
+                    }
+                    textParts.push(formatDate(valuePart, formatDateOptions));
                 }
                 button.innerText = textParts.join(', ');
             };
@@ -184,47 +294,252 @@ for (var i = 0; i < elements.length; i++) {
             return [minDate, maxDate];
         };
 
+        var makeTooltip = function (targetButton, type, componentName, contentCallback) {
+            getTooltip(function (tooltip, tooltipID) {
+                tooltip.addClickListener(targetButton, function () {
+                    if (tooltip.isVisible(tooltipID)) {
+                        tooltip.hide(tooltipID);
+                    } else {
+                        var contentContainer = document.createElement('div');
+                        var selectedElement = contentCallback(contentContainer, function () {
+                            tooltip.hide(tooltipID);
+                        });
+                        tooltip.show(tooltipID, targetButton, contentContainer, {
+                            showArrow: false,
+                            align: 'center',
+                            contentSpacing: 2,
+                            preferedPositions: ['bottom', 'top', 'left', 'right'],
+                            contentContainer: pickerContainer,
+                            onBeforeShow: function (element) {
+                                element.setAttribute('data-form-element-component', componentName);
+                            },
+                            onHide: function () {
+                                targetButton.removeAttribute('data-form-element-data-opened', '');
+                            }
+                        });
+                        if (selectedElement !== null) {
+                            selectedElement.setAttribute('data-form-element-data-selected', '');
+                            var elementParent = selectedElement.parentNode;
+                            var elementRect = selectedElement.getBoundingClientRect();
+                            var elementParentRect = elementParent.getBoundingClientRect();
+                            elementParent.scrollTop = Math.round(Math.abs(elementRect.y - elementParentRect.y) - (elementParentRect.height - elementRect.height) / 2);
+                        }
+                        targetButton.setAttribute('data-form-element-data-opened', '');
+                    }
+                });
+            }, type);
+        };
+
         var updatePicker = function () {
             var hasValue = input.value !== '';
 
-            var html = '<div data-form-element-component="header">';
-            if (showClear) {
-                html += '<div data-form-element-component="clear-button"></div>';
+            var html = '';
+            if (showClear || showDate) {
+                html += '<div data-form-element-component="header">';
+                if (showClear) {
+                    html += '<div data-form-element-component="clear-button"></div>';
+                }
+                if (showDate) {
+                    html += '<div data-form-element-component="month-button"></div>';
+                    if (showYear) {
+                        html += '<div data-form-element-component="year-button"></div>';
+                    }
+                    html += '<div data-form-element-component="previous-button"></div>';
+                    html += '<div data-form-element-component="next-button"></div>';
+                }
+                html += '</div>';
             }
-            html += '<div data-form-element-component="month-button"></div>';
-            if (showYear) {
-                html += '<div data-form-element-component="year-button"></div>';
+            if (showDate) {
+                html += '<div data-form-element-component="dates"></div>';
             }
-            html += '<div data-form-element-component="previous-button"></div>';
-            html += '<div data-form-element-component="next-button"></div>';
-            html += '</div>';
-            html += '<div data-form-element-component="dates"></div>';
+            if (showTime) {
+                html += '<div data-form-element-component="time">';
+
+                html += '<div data-form-element-component="time-hours-element">';
+                html += '<div data-form-element-component="time-hours-label">' + hoursLabel + '</div>';
+                html += '<input type="text" data-form-element-component="time-hours-textbox"></input>';
+                html += '</div>';
+
+                html += '<div data-form-element-component="time-separator">:</div>';
+
+                html += '<div data-form-element-component="time-minutes-element">';
+                html += '<div data-form-element-component="time-minutes-label">' + minutesLabel + '</div>';
+                html += '<input type="text" data-form-element-component="time-minutes-textbox"></input>';
+                html += '</div>';
+                if (showSeconds) {
+                    html += '<div data-form-element-component="time-separator">:</div>';
+
+                    html += '<div data-form-element-component="time-seconds-element">';
+                    html += '<div data-form-element-component="time-seconds-label">' + secondsLabel + '</div>';
+                    html += '<input type="text" data-form-element-component="time-seconds-textbox"></input>';
+                    html += '</div>';
+                }
+                //html += '<div data-form-element-component="time-period-button"></div>';
+                html += '</div>';
+            }
+            if (showOK) {
+                html += '<div data-form-element-component="ok-button">OK</div>';
+            }
             pickerContainer.innerHTML = html;
 
-            var datesContainer = pickerContainer.querySelector('[data-form-element-component="dates"]');
-            var monthButton = pickerContainer.querySelector('[data-form-element-component="month-button"]');
-            var yearButton = pickerContainer.querySelector('[data-form-element-component="year-button"]');
-            var previousButton = pickerContainer.querySelector('[data-form-element-component="previous-button"]');
-            var nextButton = pickerContainer.querySelector('[data-form-element-component="next-button"]');
+            if (showDate) {
+                var datesContainer = pickerContainer.querySelector('[data-form-element-component="dates"]');
+                var monthButton = pickerContainer.querySelector('[data-form-element-component="month-button"]');
+                var yearButton = pickerContainer.querySelector('[data-form-element-component="year-button"]');
+                var previousButton = pickerContainer.querySelector('[data-form-element-component="previous-button"]');
+                var nextButton = pickerContainer.querySelector('[data-form-element-component="next-button"]');
+            }
             if (showClear) {
                 var clearButton = pickerContainer.querySelector('[data-form-element-component="clear-button"]');
             }
+            if (showOK) {
+                var okButton = pickerContainer.querySelector('[data-form-element-component="ok-button"]');
+            }
+            if (showTime) {
+                var timeHoursInput = pickerContainer.querySelector('[data-form-element-component="time-hours-textbox"]');
+                var timeMinutesInput = pickerContainer.querySelector('[data-form-element-component="time-minutes-textbox"]');
+                if (showSeconds) {
+                    var timeSecondsInput = pickerContainer.querySelector('[data-form-element-component="time-seconds-textbox"]');
+                }
+                //var timePeriodButton = pickerContainer.querySelector('[data-form-element-component="time-period-button"]');
 
-            previousButton.addEventListener('click', function () {
-                changeContextDateMonth(-1);
-            });
+                var makeTimePartOptionTooltip = function (timePartInput, type, maxValue, allowEnterOverMax, keyword1, keyword2, getPartValue, setPartValue) {
+                    if (timePartInput !== null) {
+                        timePartInput.value = getPartValue();
+                        timePartInput.addEventListener('change', function () {
+                            var value = timePartInput.value;
+                            if (value !== '') {
+                                var valueAsInt = parseInt(value);
+                                if (isNaN(valueAsInt)) {
+                                    value = 0
+                                } else if (valueAsInt >= maxValue && !allowEnterOverMax) {
+                                    value = maxValue;
+                                }
+                            }
+                            setPartValue(value);
+                            setValueFromContextDate(true, false);
+                            timePartInput.value = value !== '' ? getPartValue() : '';
+                            updatePickerDates();
+                        });
+                        var hideTooltipReference = null;
+                        var hideTooltipIfOpeneded = function () {
+                            try {
+                                hideTooltipReference();
+                            } catch (e) {
 
-            nextButton.addEventListener('click', function () {
-                changeContextDateMonth(1);
-            });
+                            }
+                        };
+                        var changeValue = function (change) {
+                            var value = timePartInput.value;
+                            if (change > 0 && value === '') {
+                                value = '0';
+                            }
+                            if (value !== '') {
+                                var valueAsInt = parseInt(value);
+                                if (!isNaN(valueAsInt)) {
+                                    valueAsInt += change;
+                                    if (valueAsInt < 0) {
+                                        valueAsInt = 0;
+                                    }
+                                    if (valueAsInt > maxValue && !allowEnterOverMax) {
+                                        valueAsInt = maxValue;
+                                    }
+                                    setPartValue(valueAsInt);
+                                    setValueFromContextDate(true, false);
+                                    timePartInput.value = getPartValue();
+                                    updatePickerDates();
+                                }
+                            }
+                        };
+                        timePartInput.addEventListener('keydown', function (e) {
+                            var keyCode = e.keyCode;
+                            if (keyCode === 9) { // tab
+                                hideTooltipIfOpeneded();
+                            } else if (keyCode === 40) { // down
+                                hideTooltipIfOpeneded();
+                                changeValue(e.shiftKey ? 10 : 1);
+                            } else if (keyCode === 38) { // up
+                                hideTooltipIfOpeneded();
+                                changeValue(e.shiftKey ? -10 : -1);
+                            } else if (keyCode === 13) { // enter
+                                hideTooltipIfOpeneded();
+                                var nextInput = timePartInput.parentNode.nextSibling !== null ? timePartInput.parentNode.nextSibling.nextSibling.lastChild : null;
+                                if (nextInput !== null) {
+                                    nextInput.focus();
+                                } else {
+                                    timePartInput.blur();
+                                    if (isButtonType) {
+                                        setTooltipVisiblity(false);
+                                    }
+                                }
+                            }
+                        });
+                        timePartInput.setAttribute('tabindex', '0');
+                        makeTooltip(timePartInput, type, 'time-' + keyword1 + '-tooltip', function (contentContainer, hideTooltip) {
+                            hideTooltipReference = hideTooltip;
+                            contentContainer.setAttribute('data-form-element-component', 'time-' + keyword1);
+                            for (var i = 0; i <= maxValue; i++) {
+                                var optionElement = document.createElement('div');
+                                optionElement.setAttribute('data-form-element-component', 'time-' + keyword2);
+                                optionElement.setAttribute('data-form-element-data-value', i);
+                                optionElement.innerText = i;
+                                optionElement.addEventListener('click', (function (value) {
+                                    return function () {
+                                        hideTooltip();
+                                        setPartValue(value);
+                                        setValueFromContextDate(true, false);
+                                        timePartInput.value = getPartValue();
+                                        updatePickerDates();
+                                    };
+                                })(i));
+                                contentContainer.appendChild(optionElement);
+                            }
+                            return contentContainer.querySelector('[data-form-element-data-value="' + i + '"]');
+                        });
+                    }
+                };
+                makeTimePartOptionTooltip(timeHoursInput, 'th', 23, showTimeDuration, 'hours', 'hour', function () {
+                    return hasTime(input.value) ? getDateValueTimePart(input.value, 0).toString() : '';
+                }, function (value) {
+                    var hours = value !== '' ? parseInt(value) : 0;
+                    contextDate.hours = hours;
+                    if (showTimeDuration) {
+                        hours = 23;
+                    }
+                    contextDate.date.setHours(hours);
+                });
+                makeTimePartOptionTooltip(timeMinutesInput, 'tm', 59, false, 'minutes', 'minute', function () {
+                    return hasTime(input.value) ? getDateValueTimePart(input.value, 1).toString().padStart(2, '0') : '';
+                }, function (value) {
+                    contextDate.date.setMinutes(value !== '' ? value : 0);
+                });
+                if (showSeconds) {
+                    makeTimePartOptionTooltip(timeSecondsInput, 'ts', 59, false, 'seconds', 'second', function () {
+                        return hasTime(input.value) ? getDateValueTimePart(input.value, 2).toString().padStart(2, '0') : '';
+                    }, function (value) {
+                        contextDate.date.setSeconds(value !== '' ? value : 0);
+                    });
+                }
+            }
+
+            if (showDate) {
+                previousButton.addEventListener('click', function () {
+                    changeContextDateMonth(-1);
+                });
+
+                nextButton.addEventListener('click', function () {
+                    changeContextDateMonth(1);
+                });
+            }
 
             if (showClear) {
                 clearButton.addEventListener('click', function () {
                     if (input.value === '') {
                         return;
                     }
-                    contextDate = getCurrentDateObject();
-                    setValue('');
+                    contextDate.date = getCurrentDateObject();
+                    contextDate.hours = 0;
+                    setValue('', true, true);
                     if (isButtonType) {
                         setTooltipVisiblity(false);
                     }
@@ -233,172 +548,150 @@ for (var i = 0; i < elements.length; i++) {
                 clearButton.style.setProperty('pointer-events', hasValue ? 'auto' : 'none');
             }
 
+            if (showOK) {
+                okButton.addEventListener('click', function () {
+                    if (isButtonType) {
+                        setTooltipVisiblity(false);
+                    }
+                });
+            }
+
             var minMaxDates = getMinMaxDates();
             var minDate = minMaxDates[0];
             var maxDate = minMaxDates[1];
 
-            var contextDateMonth = contextDate.getMonth();
+            if (showDate) {
+                var contextDateMonth = contextDate.date.getMonth();
 
-            var makeTooltip = function (targetButton, type, componentName, contentCallback) {
-                getTooltip(function (tooltip, tooltipID) {
-                    tooltip.addClickListener(targetButton, function () {
-                        if (tooltip.isVisible(tooltipID)) {
-                            tooltip.hide(tooltipID);
-                        } else {
-                            var contentContainer = document.createElement('div');
-                            var selectedElement = contentCallback(contentContainer, function () {
-                                tooltip.hide(tooltipID);
-                            });
-                            tooltip.show(tooltipID, targetButton, contentContainer, {
-                                showArrow: false,
-                                align: 'center',
-                                contentSpacing: 2,
-                                preferedPositions: ['bottom', 'top', 'left', 'right'],
-                                contentContainer: pickerContainer,
-                                onBeforeShow: function (element) {
-                                    element.setAttribute('data-form-element-component', componentName);
-                                },
-                                onHide: function () {
-                                    targetButton.removeAttribute('data-form-element-data-opened', '');
-                                }
-                            });
-                            if (selectedElement !== null) {
-                                selectedElement.setAttribute('data-form-element-data-selected', '');
-                                var elementParent = selectedElement.parentNode;
-                                var elementRect = selectedElement.getBoundingClientRect();
-                                var elementParentRect = elementParent.getBoundingClientRect();
-                                elementParent.scrollTop = Math.round(Math.abs(elementRect.y - elementParentRect.y) - (elementParentRect.height - elementRect.height) / 2);
-                            }
-                            targetButton.setAttribute('data-form-element-data-opened', '');
-                        }
-                    });
-                }, type);
-            };
-
-            monthButton.innerText = formatDate(contextDate, ['month']);
-            makeTooltip(monthButton, 'm', 'months-tooltip', function (contentContainer, hideTooltip) {
-                contentContainer.setAttribute('data-form-element-component', 'months');
-                for (var i = 1; i <= 12; i++) {
-                    var monthElement = document.createElement('div');
-                    monthElement.setAttribute('data-form-element-component', 'month');
-                    monthElement.setAttribute('data-form-element-data-value', i);
-                    monthElement.innerText = formatDate('2000-' + i + '-1', ['month']);
-                    monthElement.addEventListener('click', (function (month) {
-                        return function () {
-                            contextDate.setMonth(month - 1);
-                            hideTooltip();
-                            updatePicker();
-                        };
-                    })(i));
-                    contentContainer.appendChild(monthElement);
-                }
-                return contentContainer.querySelector('[data-form-element-data-value="' + (contextDate.getMonth() + 1) + '"]');
-            });
-
-            if (yearButton !== null) {
-                yearButton.innerText = formatDate(contextDate, ['year']);
-                makeTooltip(yearButton, 'y', 'years-tooltip', function (contentContainer, hideTooltip) {
-                    contentContainer.setAttribute('data-form-element-component', 'years');
-                    var currentYear = (getCurrentDateObject()).getFullYear();
-                    for (var i = currentYear - 200; i <= currentYear + 200; i++) {
-                        var yearElement = document.createElement('div');
-                        yearElement.setAttribute('data-form-element-component', 'year');
-                        yearElement.setAttribute('data-form-element-data-value', i);
-                        yearElement.innerText = i.toString();
-                        yearElement.addEventListener('click', (function (year) {
+                monthButton.innerText = formatDate(contextDate.date, ['month']);
+                makeTooltip(monthButton, 'm', 'months-tooltip', function (contentContainer, hideTooltip) {
+                    contentContainer.setAttribute('data-form-element-component', 'months');
+                    for (var i = 1; i <= 12; i++) {
+                        var optionElement = document.createElement('div');
+                        optionElement.setAttribute('data-form-element-component', 'month');
+                        optionElement.setAttribute('data-form-element-data-value', i);
+                        optionElement.innerText = formatDate('2000-' + i + '-1', ['month']);
+                        optionElement.addEventListener('click', (function (month) {
                             return function () {
-                                contextDate.setFullYear(year);
+                                contextDate.date.setMonth(month - 1);
                                 hideTooltip();
                                 updatePicker();
                             };
                         })(i));
-                        contentContainer.appendChild(yearElement);
+                        contentContainer.appendChild(optionElement);
                     }
-                    return contentContainer.querySelector('[data-form-element-data-value="' + contextDate.getFullYear() + '"]');
+                    return contentContainer.querySelector('[data-form-element-data-value="' + (contextDate.date.getMonth() + 1) + '"]');
                 });
-            }
 
-            var date = new Date(contextDate);
-            date.setDate(1);
-            if (showYear) {
-                var firstDateWeekDay = date.getDay();
-                if (firstDateWeekDay === 0) {
-                    firstDateWeekDay = 7;
+                if (yearButton !== null) {
+                    yearButton.innerText = formatDate(contextDate.date, ['year']);
+                    makeTooltip(yearButton, 'y', 'years-tooltip', function (contentContainer, hideTooltip) {
+                        contentContainer.setAttribute('data-form-element-component', 'years');
+                        var currentYear = (getCurrentDateObject()).getFullYear();
+                        for (var i = currentYear - 200; i <= currentYear + 200; i++) {
+                            var optionElement = document.createElement('div');
+                            optionElement.setAttribute('data-form-element-component', 'year');
+                            optionElement.setAttribute('data-form-element-data-value', i);
+                            optionElement.innerText = i.toString();
+                            optionElement.addEventListener('click', (function (year) {
+                                return function () {
+                                    contextDate.date.setFullYear(year);
+                                    hideTooltip();
+                                    updatePicker();
+                                };
+                            })(i));
+                            contentContainer.appendChild(optionElement);
+                        }
+                        return contentContainer.querySelector('[data-form-element-data-value="' + contextDate.date.getFullYear() + '"]');
+                    });
                 }
-                date.setDate(date.getDate() + 1 - firstDateWeekDay);
-            }
 
-            if (showYear) {
-                var days = [
-                    formatDate('2000-01-03', ['weekDayShort']), // Mon
-                    formatDate('2000-01-04', ['weekDayShort']), // Tue
-                    formatDate('2000-01-05', ['weekDayShort']), // Wed
-                    formatDate('2000-01-06', ['weekDayShort']), // Thu
-                    formatDate('2000-01-07', ['weekDayShort']), // Fri
-                    formatDate('2000-01-08', ['weekDayShort']), // Sat
-                    formatDate('2000-01-09', ['weekDayShort']), // Sun
-                ];
-                for (var i = 0; i < 7; i++) {
+                var date = new Date(contextDate.date);
+                date.setDate(1);
+                if (showYear) {
+                    var firstDateWeekDay = date.getDay();
+                    if (firstDateWeekDay === 0) {
+                        firstDateWeekDay = 7;
+                    }
+                    date.setDate(date.getDate() + 1 - firstDateWeekDay);
+                }
+
+                if (showYear) {
+                    var days = [
+                        formatDate('2000-01-03', ['weekDayShort']), // Mon
+                        formatDate('2000-01-04', ['weekDayShort']), // Tue
+                        formatDate('2000-01-05', ['weekDayShort']), // Wed
+                        formatDate('2000-01-06', ['weekDayShort']), // Thu
+                        formatDate('2000-01-07', ['weekDayShort']), // Fri
+                        formatDate('2000-01-08', ['weekDayShort']), // Sat
+                        formatDate('2000-01-09', ['weekDayShort']), // Sun
+                    ];
+                    for (var i = 0; i < 7; i++) {
+                        var dateElement = document.createElement('div');
+                        dateElement.setAttribute('data-form-element-component', 'day');
+                        dateElement.innerText = days[i];
+                        datesContainer.appendChild(dateElement);
+                    }
+                }
+
+                var currentDateAsObject = getCurrentDateObject();
+                var currentDateAsString = dateToString({ date: currentDateAsObject, hours: currentDateAsObject.getHours() });
+                var valueParts = getValueParts(input.value, true);
+
+                var dateRows = showYear ? 6 : 5;
+                for (var i = 0; i < dateRows * 7; i++) {
+                    var disabled = false;
+                    if (minDate !== null && minDate.getTime() > date.getTime()) {
+                        disabled = true;
+                    } else if (maxDate !== null && maxDate.getTime() < date.getTime()) {
+                        disabled = true;
+                    }
+                    var dateAsString = dateToString({ date: date, hours: 0 });
                     var dateElement = document.createElement('div');
-                    dateElement.setAttribute('data-form-element-component', 'day');
-                    dateElement.innerText = days[i];
-                    datesContainer.appendChild(dateElement);
-                }
-            }
-
-            var currentDateAsString = dateToString(getCurrentDateObject(), showYear);
-            var valueParts = getValueParts(input.value);
-
-            var dateRows = showYear ? 6 : 5;
-            for (var i = 0; i < dateRows * 7; i++) {
-                var disabled = false;
-                if (minDate !== null && minDate.getTime() > date.getTime()) {
-                    disabled = true;
-                } else if (maxDate !== null && maxDate.getTime() < date.getTime()) {
-                    disabled = true;
-                }
-                var dateAsString = dateToString(date, showYear);
-                var dateElement = document.createElement('div');
-                dateElement.setAttribute('data-form-element-component', 'date');
-                dateElement.setAttribute('data-form-element-data-value', dateAsString);
-                dateElement.setAttribute('data-form-element-data-day', i % 7 === 5 || i % 7 === 6 ? 'weekend' : 'weekday');
-                dateElement.setAttribute('data-form-element-data-month', date.getMonth() === contextDateMonth ? 'current' : 'other');
-                if (valueParts.indexOf(dateAsString) !== -1) {
-                    dateElement.setAttribute('data-form-element-data-selected', '');
-                }
-                if (dateAsString === currentDateAsString) {
-                    dateElement.setAttribute('data-form-element-data-today', '');
-                }
-                dateElement.innerText = date.getDate().toString();
-                if (disabled) {
-                    dateElement.setAttribute('data-form-element-data-disabled', '');
-                } else {
-                    dateElement.addEventListener('click', (function (dateAsString) {
-                        return function () {
-                            if (!allowSelect) {
-                                return;
-                            }
-                            if (multiple) {
-                                var valueParts = getValueParts(input.value);
-                                if (valueParts.indexOf(dateAsString) === -1) {
-                                    valueParts.push(dateAsString);
+                    dateElement.setAttribute('data-form-element-component', 'date');
+                    dateElement.setAttribute('data-form-element-data-value', dateAsString);
+                    dateElement.setAttribute('data-form-element-data-day', i % 7 === 5 || i % 7 === 6 ? 'weekend' : 'weekday');
+                    dateElement.setAttribute('data-form-element-data-month', date.getMonth() === contextDateMonth ? 'current' : 'other');
+                    if (valueParts.indexOf(dateAsString) !== -1) {
+                        dateElement.setAttribute('data-form-element-data-selected', '');
+                    }
+                    if (dateAsString === currentDateAsString) {
+                        dateElement.setAttribute('data-form-element-data-today', '');
+                    }
+                    dateElement.innerText = date.getDate().toString();
+                    if (disabled) {
+                        dateElement.setAttribute('data-form-element-data-disabled', '');
+                    } else {
+                        dateElement.addEventListener('click', (function (dateAsString) {
+                            return function () {
+                                if (!allowSelect) {
+                                    return;
+                                }
+                                if (multiple) {
+                                    var valueParts = getValueParts(input.value, true);
+                                    if (valueParts.indexOf(dateAsString) === -1) {
+                                        valueParts.push(dateAsString);
+                                    } else {
+                                        valueParts = removeFromArray(valueParts, dateAsString);
+                                    }
+                                    valueParts.sort();
+                                    setValue(valueParts.join(';', valueParts), true, true);
                                 } else {
-                                    valueParts = removeFromArray(valueParts, dateAsString);
+                                    var newDate = new Date(dateAsString);
+                                    newDate.setHours(contextDate.date.getHours());
+                                    newDate.setMinutes(contextDate.date.getMinutes());
+                                    newDate.setSeconds(contextDate.date.getSeconds());
+                                    setValue(dateToString({ date: newDate }), true, true);
+                                    if (isButtonType) {
+                                        setTooltipVisiblity(false);
+                                    }
                                 }
-                                valueParts.sort();
-                                setValue(valueParts.join(';', valueParts));
-                                updatePicker();
-                            } else {
-                                setValue(dateAsString);
-                                if (isButtonType) {
-                                    setTooltipVisiblity(false);
-                                }
-                            }
-                        };
-                    })(dateAsString));
+                            };
+                        })(dateAsString));
+                    }
+                    datesContainer.appendChild(dateElement);
+                    date.setDate(date.getDate() + 1);
                 }
-                datesContainer.appendChild(dateElement);
-                date.setDate(date.getDate() + 1);
             }
 
             element.dispatchEvent(new Event('pickerUpdate', { 'bubbles': false }));
@@ -408,8 +701,21 @@ for (var i = 0; i < elements.length; i++) {
             updatePicker();
         }
 
+        var updatePickerDates = function () {
+            var valueParts = getValueParts(input.value, true);
+            var dateElements = pickerContainer.querySelectorAll('[data-form-element-data-value]');
+            for (var i = 0; i < dateElements.length; i++) {
+                var dateElement = dateElements[i];
+                if (valueParts.indexOf(dateElement.getAttribute('data-form-element-data-value')) !== -1) {
+                    dateElement.setAttribute('data-form-element-data-selected', '');
+                } else {
+                    dateElement.removeAttribute('data-form-element-data-selected');
+                }
+            }
+        };
+
         element.showMonth = function (month, year) {
-            var newContextDate = new Date(contextDate.getTime());
+            var newContextDate = new Date(contextDate.date.getTime());
             var hasChange = false;
             if (typeof month !== 'undefined') {
                 month = parseInt(month);
@@ -441,7 +747,7 @@ for (var i = 0; i < elements.length; i++) {
                 hasChange = true;
             }
             if (hasChange) {
-                contextDate = newContextDate;
+                contextDate.date = newContextDate;
                 updatePicker();
             }
         }
@@ -467,6 +773,8 @@ for (var i = 0; i < elements.length; i++) {
             input.value = value;
             if (isButtonType) {
                 updateButtonText();
+            } else {
+                updatePicker();
             }
         };
 

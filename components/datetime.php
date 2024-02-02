@@ -21,6 +21,21 @@ if (isset($attributes['type'])) {
 }
 
 $value = isset($attributes['value']) ? (string)$attributes['value'] : '';
+$showDate = !isset($attributes['showdate']) || (isset($attributes['showdate']) && $attributes['showdate'] === 'true');
+$showYear = !isset($attributes['showyear']) || (isset($attributes['showyear']) && $attributes['showyear'] === 'true');
+$showTime = isset($attributes['showtime']) && $attributes['showtime'] === 'true';
+$showSeconds = isset($attributes['showseconds']) && $attributes['showseconds'] === 'true';
+$showTimeDuration = isset($attributes['showtimeduration']) && $attributes['showtimeduration'] === 'true';
+
+if (!isset($attributes['hourslabel'])) {
+    $attributes['hourslabel'] = __('ivopetkov.form-element.datetime.Hours');
+}
+if (!isset($attributes['minuteslabel'])) {
+    $attributes['minuteslabel'] = __('ivopetkov.form-element.datetime.Minutes');
+}
+if (!isset($attributes['secondslabel'])) {
+    $attributes['secondslabel'] = __('ivopetkov.form-element.datetime.Seconds');
+}
 
 echo '<html><head>';
 echo '<link rel="client-packages-embed" name="tooltip">';
@@ -37,10 +52,16 @@ echo '<style>'
     . '[data-form-element-type="datetime"] [data-form-element-component="day"]{display:inline-block;width:calc(100% / 7);}'
     . '[data-form-element-type="datetime"] [data-form-element-component="date"]{cursor:default;display:inline-block;width:calc(100% / 7);}' //height:40px;margin:8px max(0px,calc((100% - 7*44px)/14));
     . '[data-form-element-type="datetime"] [data-form-element-component="date"]:not([data-form-element-data-disabled]){cursor:pointer;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="months"]{overflow:auto;overscroll-behavior:none;height:200px;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="years"]{overflow:auto;overscroll-behavior:none;height:200px;}'
+    . '[data-form-element-type="datetime"] [data-form-element-component="months"],'
+    . '[data-form-element-type="datetime"] [data-form-element-component="years"],'
+    . '[data-form-element-type="datetime"] [data-form-element-component="time-hours"],'
+    . '[data-form-element-type="datetime"] [data-form-element-component="time-minutes"],'
+    . '[data-form-element-type="datetime"] [data-form-element-component="time-seconds"]{overflow:auto;overscroll-behavior:none;height:200px;}'
     . '[data-form-element-type="datetime"] [data-form-element-component="month"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="year"]{cursor:pointer;}'
+    . '[data-form-element-type="datetime"] [data-form-element-component="year"],'
+    . '[data-form-element-type="datetime"] [data-form-element-component="time-hour"],'
+    . '[data-form-element-type="datetime"] [data-form-element-component="time-minute"],'
+    . '[data-form-element-type="datetime"] [data-form-element-component="time-second"]{cursor:pointer;}'
     . '</style>';
 
 echo '<script>'
@@ -52,7 +73,35 @@ echo '<div ' . Utilities::getContainerAttributes('datetime', $attributes) . '>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
 if ($type === 'button') {
-    echo '<span data-form-element-component="button" role="button" tabindex="0">' . ($value !== '' ? $app->localization->formatDate($value, ['date']) : '') . '</span>';
+
+    $fixTimeLength = function ($time) { // 1:20 > 01:20
+        $parts = explode(':', $time);
+        for ($i = 0; $i < sizeof($parts); $i++) {
+            $parts[$i] = str_pad($parts[$i], 2, '0', STR_PAD_LEFT);
+        }
+        return implode(':', $parts);
+    };
+
+    $formatDateValue = $value;
+    $formatDateOptions = [];
+    if ($showDate) {
+        if ($showYear) {
+            $formatDateOptions[] = 'date';
+        } else {
+            $formatDateOptions[] = 'monthDay';
+            $formatDateOptions[] = 'month';
+        }
+    }
+    if ($showTime || $showTimeDuration) {
+        if ($showDate && strpos($formatDateValue, 'T') === false) {
+        } else {
+            $formatDateOptions[] = 'time';
+        }
+        if (!$showDate && $formatDateValue !== '') {
+            $formatDateValue = '1111-11-11T' . $fixTimeLength($formatDateValue) . ($showSeconds ? '' : ':00');
+        }
+    }
+    echo '<span data-form-element-component="button" role="button" tabindex="0">' . ($formatDateValue !== '' ? $app->localization->formatDate($formatDateValue, $formatDateOptions) : '') . '</span>';
 }
 echo '<input type="hidden"' . Utilities::getElementAttributes($attributes) . '/>';
 if ($type === 'button') {

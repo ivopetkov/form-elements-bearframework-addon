@@ -8,4 +8,7 @@ return [
     'ivopetkov.form-element.file.SelectedFilesCount' => '%s files selected',
     'ivopetkov.form-element.file.TooBig' => 'The selected file is too big. The maximum allowed size is %s.',
     'ivopetkov.form-element.image.TooBig' => 'The selected file is too big. The maximum allowed size is %s.',
+    'ivopetkov.form-element.datetime.Hours' => 'Hours',
+    'ivopetkov.form-element.datetime.Minutes' => 'Minutes',
+    'ivopetkov.form-element.datetime.Seconds' => 'Seconds',
 ];
