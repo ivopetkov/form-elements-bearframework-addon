@@ -96,6 +96,9 @@ if ($type === 'button') {
         if ($showDate && strpos($formatDateValue, 'T') === false) {
         } else {
             $formatDateOptions[] = 'time';
+            if ($showSeconds) {
+                $formatDateOptions[] = 'seconds';
+            }
         }
         if (!$showDate && $formatDateValue !== '') {
             $formatDateValue = '1111-11-11T' . $fixTimeLength($formatDateValue) . ($showSeconds ? '' : ':00');

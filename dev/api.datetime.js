@@ -164,6 +164,16 @@ for (var i = 0; i < elements.length; i++) {
             return result;
         };
 
+        var isDateInList = function (dateAsString, datesList) {
+            var dateAsStringNoTime = parseDateValue(dateAsString)[0];
+            for (var i = 0; i < datesList.length; i++) {
+                if (dateAsStringNoTime === parseDateValue(datesList[i])[0]) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
         var setValue = function (value, updateButtonHTML, updatePickerHTML) {
             if (input.value !== value) {
                 input.value = value;
@@ -274,6 +284,9 @@ for (var i = 0; i < elements.length; i++) {
                         if (showDate && valuePart.indexOf('T') === -1) {
                         } else {
                             formatDateOptions.push('time');
+                            if(showSeconds){
+                                formatDateOptions.push('seconds');
+                            }
                         }
                         if (!showDate && valuePart !== '') {
                             valuePart = '1111-11-11T' + fixTimeLength(valuePart) + (showSeconds ? '' : ':00');
@@ -652,7 +665,7 @@ for (var i = 0; i < elements.length; i++) {
                     dateElement.setAttribute('data-form-element-data-value', dateAsString);
                     dateElement.setAttribute('data-form-element-data-day', i % 7 === 5 || i % 7 === 6 ? 'weekend' : 'weekday');
                     dateElement.setAttribute('data-form-element-data-month', date.getMonth() === contextDateMonth ? 'current' : 'other');
-                    if (valueParts.indexOf(dateAsString) !== -1) {
+                    if (isDateInList(dateAsString, valueParts)) {
                         dateElement.setAttribute('data-form-element-data-selected', '');
                     }
                     if (dateAsString === currentDateAsString) {
@@ -706,7 +719,7 @@ for (var i = 0; i < elements.length; i++) {
             var dateElements = pickerContainer.querySelectorAll('[data-form-element-data-value]');
             for (var i = 0; i < dateElements.length; i++) {
                 var dateElement = dateElements[i];
-                if (valueParts.indexOf(dateElement.getAttribute('data-form-element-data-value')) !== -1) {
+                if (isDateInList(dateElement.getAttribute('data-form-element-data-value'), valueParts)) {
                     dateElement.setAttribute('data-form-element-data-selected', '');
                 } else {
                     dateElement.removeAttribute('data-form-element-data-selected');
