@@ -28,6 +28,7 @@ for (var i = 0; i < elements.length; i++) {
         var showOK = ['true'].indexOf(input.getAttribute('showOK')) !== -1;
         var multiple = ['', 'true'].indexOf(input.getAttribute('multiple')) !== -1;
         var allowSelect = [null, 'true'].indexOf(input.getAttribute('allowSelect')) !== -1;
+        var allowSwipe = ['true'].indexOf(input.getAttribute('allowSwipe')) !== -1;
 
         var hoursLabel = input.getAttribute('hoursLabel');
         var minutesLabel = input.getAttribute('minutesLabel');
@@ -284,7 +285,7 @@ for (var i = 0; i < elements.length; i++) {
                         if (showDate && valuePart.indexOf('T') === -1) {
                         } else {
                             formatDateOptions.push('time');
-                            if(showSeconds){
+                            if (showSeconds) {
                                 formatDateOptions.push('seconds');
                             }
                         }
@@ -704,6 +705,31 @@ for (var i = 0; i < elements.length; i++) {
                     }
                     datesContainer.appendChild(dateElement);
                     date.setDate(date.getDate() + 1);
+                }
+
+                if (allowSwipe) {
+                    var swipeTouchStart = [null, null]; // x, time
+
+                    datesContainer.addEventListener('touchstart', function (event) {
+                        if (event.touches !== undefined) {
+                            swipeTouchStart = [event.touches[0].clientX, (new Date()).getTime()];
+                        }
+                    }, false);
+
+                    datesContainer.addEventListener('touchend', function (event) {
+                        if (event.changedTouches === undefined) {
+                            return;
+                        }
+                        var swipeTouchEnd = [event.changedTouches[0].clientX, (new Date()).getTime()];
+                        if (swipeTouchEnd[1] - swipeTouchStart[1] > 300) {
+                            return;
+                        }
+                        if (swipeTouchEnd[0] + 100 < swipeTouchStart[0]) {
+                            changeContextDateMonth(1);
+                        } else if (swipeTouchEnd[0] - 100 > swipeTouchStart[0]) {
+                            changeContextDateMonth(-1);
+                        }
+                    }, false);
                 }
             }
 
