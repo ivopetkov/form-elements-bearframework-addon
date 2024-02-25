@@ -721,7 +721,7 @@ for (var i = 0; i < elements.length; i++) {
                             return;
                         }
                         var swipeTouchEnd = [event.changedTouches[0].clientX, (new Date()).getTime()];
-                        if (swipeTouchEnd[1] - swipeTouchStart[1] > 300) {
+                        if (swipeTouchEnd[1] - swipeTouchStart[1] > 100) {
                             return;
                         }
                         if (swipeTouchEnd[0] + 100 < swipeTouchStart[0]) {
