@@ -721,12 +721,12 @@ for (var i = 0; i < elements.length; i++) {
                             return;
                         }
                         var swipeTouchEnd = [event.changedTouches[0].clientX, (new Date()).getTime()];
-                        if (swipeTouchEnd[1] - swipeTouchStart[1] > 100) {
+                        if (swipeTouchEnd[1] - swipeTouchStart[1] > 500) {
                             return;
                         }
-                        if (swipeTouchEnd[0] + 100 < swipeTouchStart[0]) {
+                        if (swipeTouchEnd[0] + 80 < swipeTouchStart[0]) {
                             changeContextDateMonth(1);
-                        } else if (swipeTouchEnd[0] - 100 > swipeTouchStart[0]) {
+                        } else if (swipeTouchEnd[0] - 80 > swipeTouchStart[0]) {
                             changeContextDateMonth(-1);
                         }
                     }, false);
