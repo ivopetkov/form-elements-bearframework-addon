@@ -24,6 +24,7 @@ $context->classes
     ->add('IvoPetkov\BearFrameworkAddons\FormElements\*', 'classes/*.php');
 
 $app->components
+    //->addTag('form-element-label', 'file:' . $context->dir . '/components/label.php')
     ->addTag('form-element-checkbox', 'file:' . $context->dir . '/components/checkbox.php')
     ->addTag('form-element-file', 'file:' . $context->dir . '/components/file.php')
     ->addTag('form-element-hidden', 'file:' . $context->dir . '/components/hidden.php')
@@ -37,4 +38,5 @@ $app->components
     ->addTag('form-element-textbox', 'file:' . $context->dir . '/components/textbox.php')
     ->addTag('form-element-radio-list', 'file:' . $context->dir . '/components/radio-list.php')
     ->addTag('form-element-checkbox-list', 'file:' . $context->dir . '/components/checkbox-list.php')
-    ->addTag('form-element-datetime', 'file:' . $context->dir . '/components/datetime.php');
+    ->addTag('form-element-datetime', 'file:' . $context->dir . '/components/datetime.php')
+    ->addTag('form-element-rich-textarea', 'file:' . $context->dir . '/components/rich-textarea.php');
