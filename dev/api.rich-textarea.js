@@ -550,7 +550,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.setValue = function (value) {
-            if (value !== contentContainer.innerText) { // prevent moving the caret
+            if (value !== element.getValue()) { // prevent moving the caret
                 contentContainer.innerText = value;
                 processChange(100);
                 updateLinks();
@@ -560,5 +560,11 @@ for (var i = 0; i < elements.length; i++) {
         element.setVisibility = function (visible) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };
+
+        element.isActive = function () {
+            var activeElement = document.activeElement;
+            return contentContainer === activeElement || contentContainer.contains(activeElement);
+        };
+
     })(elements[i]);
 }

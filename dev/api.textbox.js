@@ -32,5 +32,10 @@ for (var i = 0; i < elements.length; i++) {
         element.setVisibility = function (visible) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };
+
+        element.isActive = function () {
+            return document.activeElement === input;
+        };
+
     })(elements[i]);
 }
