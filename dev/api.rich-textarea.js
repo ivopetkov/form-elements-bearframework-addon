@@ -89,6 +89,15 @@ for (var i = 0; i < elements.length; i++) {
                     }
                 }
             }
+            var contentContainerChildren = contentContainer.childNodes;
+            if (contentContainer.childNodes.length === 1) {
+                var firstChild = contentContainer.firstChild;
+                if (firstChild.nodeType === 1 && firstChild.tagName.toLowerCase() === 'br') {
+                    contentContainer.removeChild(firstChild);
+                    //console.log('change - remove last br');
+                    hasChange = true;
+                }
+            }
             if (hasChange) {
                 limit--;
                 if (limit > 0) {
@@ -160,7 +169,7 @@ for (var i = 0; i < elements.length; i++) {
                 tooltip.show(tooltipID, target, html, {
                     showArrow: true,
                     align: 'center',
-                    contentSpacing: 2,
+                    contentSpacing: 8,
                     preferedPositions: ['bottom', 'top', 'left', 'right'],
                     onBeforeShow: function (element) {
                         element.setAttribute('data-form-element-component', 'highlight-tooltip');
@@ -497,6 +506,46 @@ for (var i = 0; i < elements.length; i++) {
         });
 
         element.getValue = function () {  // Returns empty string if the rich-textarea is empty
+            if (contentContainer.querySelector('div') !== null) {
+                var text = "";
+                var children = contentContainer.childNodes;
+                for (var i = 0; i < children.length; i++) {
+                    var child = children[i];
+                    if (child.nodeType === 1) {
+                        var childTagName = child.tagName.toLowerCase();
+                        if (childTagName === 'div') {
+                            var childChildrenCount = child.childNodes.length;
+                            var childFirstChild = child.firstChild;
+                            var childSecondChild = childFirstChild !== null ? childFirstChild.nextSibling : null;
+                            var childLastChild = child.lastChild;
+                            if (childChildrenCount === 0) {
+
+                            } else {
+                                var isSpecialBrCase = false;
+                                if (childChildrenCount === 1 && childFirstChild.nodeType === 1 && childFirstChild.tagName.toLowerCase() === 'br') {
+                                    isSpecialBrCase = true;
+                                } else if (childChildrenCount === 2 && childFirstChild.nodeType === 1 && childFirstChild.tagName.toLowerCase() === 'br' && childSecondChild.nodeType === 3 && childSecondChild.textContent === "\n") {
+                                    isSpecialBrCase = true;
+                                } else if (childFirstChild !== null && child.previousSibling !== null) {
+                                    text += "\n";
+                                }
+                                var textToAdd = child.innerText;
+                                if (!isSpecialBrCase && childLastChild !== null && childLastChild.nodeType === 1 && childLastChild.tagName.toLowerCase() === 'br') {
+                                    textToAdd = textToAdd.substring(0, textToAdd.length - 1);
+                                }
+                                text += textToAdd;
+                            }
+                        } else if (childTagName === 'br') {
+                            text += "\n";
+                        } else {
+                            text += child.innerText;
+                        }
+                    } else {
+                        text += child.textContent;
+                    }
+                }
+                return text;
+            }
             return contentContainer.innerText;
         };
 

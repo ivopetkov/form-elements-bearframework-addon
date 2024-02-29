@@ -23,12 +23,13 @@ echo '<link rel="client-packages-embed" name="tooltip">';
 echo '<style>'
     . Utilities::getDefaultStyles()
     . '[data-form-element-type="rich-textarea"] div[contenteditable]{word-break:break-word;max-width:100%;}'
+    . '[data-form-element-type="rich-textarea"] div[contenteditable]:empty::before{display:block;content:attr(placeholder);opacity:0.6;;}'
     . '</style>';
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('rich-textarea', $attributes) . '>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
-echo '<div contenteditable="true" ' . Utilities::getElementAttributes($attributes) . '>' . htmlentities($value) . '</div>';
+echo '<div contenteditable="true" ' . Utilities::getElementAttributes($attributes) . '>' . str_replace("\\n", "<br>", htmlentities($value)) . '</div>';
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.rich-textarea.js');
 $js = include __DIR__ . '/rich-textarea.api.min.js.php';
