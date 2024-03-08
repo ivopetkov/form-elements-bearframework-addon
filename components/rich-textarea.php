@@ -23,7 +23,7 @@ echo '<link rel="client-packages-embed" name="tooltip">';
 echo '<style>'
     . Utilities::getDefaultStyles()
     . '[data-form-element-type="rich-textarea"] div[contenteditable]{word-break:break-word;max-width:100%;}'
-    . '[data-form-element-type="rich-textarea"] div[contenteditable]:empty::before{display:block;content:attr(placeholder);opacity:0.6;;}'
+    . '[data-form-element-type="rich-textarea"] div[contenteditable]:empty::before{display:block;content:attr(placeholder);opacity:0.6;pointer-events:none;}'
     . '</style>';
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('rich-textarea', $attributes) . '>';

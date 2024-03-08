@@ -167,9 +167,7 @@ for (var i = 0; i < elements.length; i++) {
                 // html = event.highlightTooltipHTML;
                 // contentContainer.dispatchEvent(event);
                 tooltip.show(tooltipID, target, html, {
-                    showArrow: true,
                     align: 'center',
-                    contentSpacing: 8,
                     preferedPositions: ['bottom', 'top', 'left', 'right'],
                     onBeforeShow: function (element) {
                         element.setAttribute('data-form-element-component', 'highlight-tooltip');
@@ -505,48 +503,74 @@ for (var i = 0; i < elements.length; i++) {
             }
         });
 
-        element.getValue = function () {  // Returns empty string if the rich-textarea is empty
-            if (contentContainer.querySelector('div') !== null) {
-                var text = "";
-                var children = contentContainer.childNodes;
-                for (var i = 0; i < children.length; i++) {
-                    var child = children[i];
-                    if (child.nodeType === 1) {
-                        var childTagName = child.tagName.toLowerCase();
-                        if (childTagName === 'div') {
-                            var childChildrenCount = child.childNodes.length;
-                            var childFirstChild = child.firstChild;
-                            var childSecondChild = childFirstChild !== null ? childFirstChild.nextSibling : null;
-                            var childLastChild = child.lastChild;
-                            if (childChildrenCount === 0) {
-
-                            } else {
-                                var isSpecialBrCase = false;
-                                if (childChildrenCount === 1 && childFirstChild.nodeType === 1 && childFirstChild.tagName.toLowerCase() === 'br') {
-                                    isSpecialBrCase = true;
-                                } else if (childChildrenCount === 2 && childFirstChild.nodeType === 1 && childFirstChild.tagName.toLowerCase() === 'br' && childSecondChild.nodeType === 3 && childSecondChild.textContent === "\n") {
-                                    isSpecialBrCase = true;
-                                } else if (childFirstChild !== null && child.previousSibling !== null) {
-                                    text += "\n";
-                                }
-                                var textToAdd = child.innerText;
-                                if (!isSpecialBrCase && childLastChild !== null && childLastChild.nodeType === 1 && childLastChild.tagName.toLowerCase() === 'br') {
-                                    textToAdd = textToAdd.substring(0, textToAdd.length - 1);
-                                }
-                                text += textToAdd;
-                            }
-                        } else if (childTagName === 'br') {
+        var getNodeTagName = function (node) {
+            return node !== null && node.nodeType === 1 ? node.tagName.toLowerCase() : null;
+        };
+        var isTextNode = function (node) {
+            return node !== null && node.nodeType === 3;
+        }
+        var convertNodeToText = function (node, isTheTarget) {
+            var text = "";
+            var tagName = getNodeTagName(node);
+            if (tagName !== null) {
+                var previousSibling = isTheTarget ? null : node.previousSibling;
+                var nextSibling = isTheTarget ? null : node.nextSibling;
+                if (tagName === 'div') {
+                    var children = node.childNodes;
+                    var childrenCount = children.length;
+                    var firstChild = node.firstChild;
+                    var secondChild = firstChild !== null ? firstChild.nextSibling : null;
+                    var lastChild = node.lastChild;
+                    if (childrenCount > 0) {
+                        if (previousSibling !== null && getNodeTagName(previousSibling) !== 'div') {
+                            text += "\n";
+                        }
+                        if (childrenCount === 1 && getNodeTagName(firstChild) === 'br') { // '<div><br></div>'
+                            text += "\n";
+                        } else if (childrenCount === 1 && isTextNode(firstChild) && firstChild.textContent === "\n") { // '<div>\n</div>'
+                            // do nothing
+                        } else if (childrenCount === 2 && getNodeTagName(firstChild) === 'br' && isTextNode(secondChild) && secondChild.textContent === "\n") {  // '<div><br>\n</div>'
                             text += "\n";
                         } else {
-                            text += child.innerText;
+                            var childrenText = "";
+                            for (var i = 0; i < childrenCount; i++) {
+                                var child = children[i];
+                                if (lastChild === child && getNodeTagName(lastChild) === 'br') { // <div>text<br></div>
+                                    continue;
+                                }
+                                childrenText += convertNodeToText(child, false);
+                            }
+                            if (childrenText !== "\n") { // <div><span><br></span></div>
+                                text += childrenText;
+                            }
+                            if (nextSibling !== null) {
+                                text += "\n";
+                            }
                         }
+                    }
+                } else if (tagName === 'br') {
+                    if (nextSibling !== null && getNodeTagName(nextSibling) === 'div') { // text<br><div>
+
                     } else {
-                        text += child.textContent;
+                        text += "\n";
+                    }
+                } else if (tagName === 'a') {
+                    text += node.innerText;
+                } else if (tagName === 'span') {
+                    var children = node.childNodes;
+                    var childrenCount = children.length;
+                    for (var i = 0; i < childrenCount; i++) {
+                        text += convertNodeToText(children[i], false);
                     }
                 }
-                return text;
+            } else if (isTextNode(node)) {
+                text += node.textContent;
             }
-            return contentContainer.innerText;
+            return text;
+        };
+
+        element.getValue = function () {  // Returns empty string if the rich-textarea is empty
+            return convertNodeToText(contentContainer, true);
         };
 
         element.setValue = function (value) {
