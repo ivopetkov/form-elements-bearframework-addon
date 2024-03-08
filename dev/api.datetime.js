@@ -248,9 +248,7 @@ for (var i = 0; i < elements.length; i++) {
                     }
                     if (visible) {
                         tooltip.show(tooltipID, button, pickerContainer, {
-                            showArrow: false,
                             align: 'start',
-                            contentSpacing: 2,
                             preferedPositions: ['bottom', 'top', 'left', 'right'],
                             contentContainer: input.nextSibling,
                             onBeforeShow: function (element) {
@@ -319,9 +317,7 @@ for (var i = 0; i < elements.length; i++) {
                             tooltip.hide(tooltipID);
                         });
                         tooltip.show(tooltipID, targetButton, contentContainer, {
-                            showArrow: false,
                             align: 'center',
-                            contentSpacing: 2,
                             preferedPositions: ['bottom', 'top', 'left', 'right'],
                             contentContainer: pickerContainer,
                             onBeforeShow: function (element) {
@@ -496,7 +492,7 @@ for (var i = 0; i < elements.length; i++) {
                                 var optionElement = document.createElement('div');
                                 optionElement.setAttribute('data-form-element-component', 'time-' + keyword2);
                                 optionElement.setAttribute('data-form-element-data-value', i);
-                                optionElement.innerText = i;
+                                optionElement.innerText = ['tm', 'ts'].indexOf(type) !== -1 ? i.toString().padStart(2, '0') : i;
                                 optionElement.addEventListener('click', (function (value) {
                                     return function () {
                                         hideTooltip();
