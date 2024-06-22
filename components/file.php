@@ -51,6 +51,12 @@ if (isset($attributes['maxsize'])) {
     unset($attributes['maxsize']);
 }
 
+$showClearButton = true;
+if (isset($attributes['showclearbutton'])) {
+    $showClearButton = $attributes['showclearbutton'] === 'true';
+    unset($attributes['showclearbutton']);
+}
+
 $multiple = (string)$component->multiple === 'true' || (string)$component->multiple === 'multiple';
 
 $elementID = 'fe' . md5(uniqid());
@@ -84,7 +90,9 @@ if ($labelElement !== '') {
 echo Utilities::getHintElement($attributes);
 echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '" tabindex="0">';
 echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($value) > 0 ? (strlen($valueText) === 0 ? $value : $valueText) : $chooseText) . '</span>';
-echo '<span data-form-element-component="clear-button" title="' . htmlentities($clearButtonTitle) . '" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';" tabindex="0"></span>';
+if ($showClearButton) {
+    echo '<span data-form-element-component="clear-button" title="' . htmlentities($clearButtonTitle) . '" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';" tabindex="0"></span>';
+}
 echo '</label>';
 echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file"' . ($multiple ? ' multiple' : '') . ' accept="' . htmlentities($accept) . '"' . ($maxSize !== '' ? ' data-form-element-data-max-size="' . $maxSize . '"' : '') . '/>';
 echo Utilities::getHintAfterElement($attributes);

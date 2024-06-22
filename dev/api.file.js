@@ -156,17 +156,21 @@ for (var i = 0; i < elements.length; i++) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };
 
-        clearButton.addEventListener('click', function (event) {
-            event.stopPropagation();
-            event.preventDefault();
-            element.setValue('');
-        }, false);
+        if (clearButton !== null) {
+            clearButton.addEventListener('click', function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.setValue('');
+            }, false);
+        }
 
         var updateUI = function () {
             var selectedFilesCount = input.files.length;
             if (selectedFilesCount === 0) {
                 textElement.innerText = element.getValue().length === 0 ? 'CHOOSE_TEXT_TO_REPLACE' : '';
-                clearButton.style.display = 'none';
+                if (clearButton !== null) {
+                    clearButton.style.display = 'none';
+                }
             } else {
                 if (selectedFilesCount === 1) {
                     var text = input.files[0].name;
@@ -174,7 +178,9 @@ for (var i = 0; i < elements.length; i++) {
                     var text = 'SELECTED_FILES_COUNT_TEXT_TO_REPLACE'.replace('%s', selectedFilesCount);
                 }
                 textElement.innerText = text;
-                clearButton.style.display = 'inline-block';
+                if (clearButton !== null) {
+                    clearButton.style.display = 'inline-block';
+                }
             }
         };
 

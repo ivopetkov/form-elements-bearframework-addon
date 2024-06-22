@@ -156,21 +156,27 @@ for (var i = 0; i < elements.length; i++) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };
 
-        clearButton.addEventListener('click', function (event) {
-            event.stopPropagation();
-            event.preventDefault();
-            element.setValue('');
-        }, false);
+        if (clearButton !== null) {
+            clearButton.addEventListener('click', function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.setValue('');
+            }, false);
+        }
 
         var updateUI = function () {
             var selectedFilesCount = input.files.length;
             if (selectedFilesCount === 0) {
                 textElement.innerText = element.getValue().length === 0 ? 'CHOOSE_TEXT_TO_REPLACE' : '';
-                clearButton.style.display = 'none';
+                if (clearButton !== null) {
+                    clearButton.style.display = 'none';
+                }
                 previewLabel.style.backgroundImage = '';
             } else {
                 textElement.innerText = '';
-                clearButton.style.display = 'inline-block';
+                if (clearButton !== null) {
+                    clearButton.style.display = 'inline-block';
+                }
                 var reader = new FileReader();
                 reader.addEventListener("load", function () {
                     previewLabel.style.backgroundImage = 'url(' + reader.result + ')';
