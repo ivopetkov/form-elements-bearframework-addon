@@ -145,20 +145,36 @@ for (var i = 0; i < elements.length; i++) {
                 var type = target.getAttribute('data-rich-textarea-link-type');
                 var text = target.innerText;
                 var html = '';
+                var copyValue = null;
+                var shareURL = null;
                 if (type === 'url') {
                     if (text.indexOf('//') === -1) {
                         text = 'https://' + text;
                     }
-                    html = '<a href="' + text + '" target="_blank" rel="noopener">Open URL</a>';
+                    html = '<a href="' + text + '" target="_blank" rel="noopener" data-rich-textarea-highlight-tooltip-component="open">OPEN_URL_TEXT_TO_REPLACE</a>';
+                    copyValue = text;
+                    shareURL = text;
                 } else if (type === 'email') {
-                    html = '<a href="mailto:' + text + '" target="_blank" rel="noopener">Email</a>';
+                    html = '<a href="mailto:' + text + '" target="_blank" rel="noopener" data-rich-textarea-highlight-tooltip-component="email">EMAIL_TEXT_TO_REPLACE</a>';
+                    copyValue = text;
                 } else if (type === 'phone') {
-                    html = '<a href="tel:' + text + '" target="_blank" rel="noopener">Call</a>';
+                    html = '<a href="tel:' + text + '" target="_blank" rel="noopener" data-rich-textarea-highlight-tooltip-component="call">CALL_TEXT_TO_REPLACE</a>';
+                    copyValue = text;
                 } else if (type === 'tag') {
 
                 }
                 if (html.length === 0) {
                     return;
+                }
+                var hasCopy = false;
+                if (copyValue !== null && typeof navigator.clipboard !== 'undefined') {
+                    html += '<a data-rich-textarea-highlight-tooltip-component="copy" title="COPY_TEXT_TO_REPLACE"></a>';
+                    hasCopy = true;
+                }
+                var hasShare = false;
+                if (shareURL !== null && typeof navigator.share !== 'undefined') {
+                    html += '<a data-rich-textarea-highlight-tooltip-component="share" title="SHARE_TEXT_TO_REPLACE"></a>';
+                    hasShare = true;
                 }
                 // var event = new Event('beforeshowhighlighttooltip', { 'bubbles': true });
                 // event.highlightTooltipHTML = html;
@@ -166,11 +182,30 @@ for (var i = 0; i < elements.length; i++) {
                 // event.highlightText = text;
                 // html = event.highlightTooltipHTML;
                 // contentContainer.dispatchEvent(event);
+                var hideTooltip = function () {
+                    tooltip.hide(tooltipID);
+                };
                 tooltip.show(tooltipID, target, html, {
                     align: 'center',
                     preferedPositions: ['bottom', 'top', 'left', 'right'],
                     onBeforeShow: function (element) {
                         element.setAttribute('data-form-element-component', 'highlight-tooltip');
+                        element.querySelector('a[href]').addEventListener('click', function () {
+                            hideTooltip();
+                        });
+                        if (hasCopy) {
+                            element.querySelector('[data-rich-textarea-highlight-tooltip-component="copy"]').addEventListener('click', function () {
+                                navigator.clipboard.writeText(copyValue);
+                                hideTooltip();
+                                // todo show notification
+                            });
+                        }
+                        if (hasShare) {
+                            element.querySelector('[data-rich-textarea-highlight-tooltip-component="share"]').addEventListener('click', function () {
+                                navigator.share({ url: shareURL });
+                                hideTooltip();
+                            });
+                        }
                     },
                     onShow: function (element) {
                         //lastShownTooltipElement = element;

@@ -33,6 +33,11 @@ echo '<div contenteditable="true" ' . Utilities::getElementAttributes($attribute
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.rich-textarea.js');
 $js = include __DIR__ . '/rich-textarea.api.min.js.php';
+$js = str_replace('OPEN_URL_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.OpenURL'), $js);
+$js = str_replace('EMAIL_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Email'), $js);
+$js = str_replace('CALL_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Call'), $js);
+$js = str_replace('COPY_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Copy'), $js);
+$js = str_replace('SHARE_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Share'), $js);
 echo '<script>' . $js . '</script>';
 echo '</div>';
 echo '</body></html>';

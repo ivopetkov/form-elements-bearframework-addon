@@ -11,4 +11,9 @@ return [
     'ivopetkov.form-element.datetime.Hours' => 'Hours',
     'ivopetkov.form-element.datetime.Minutes' => 'Minutes',
     'ivopetkov.form-element.datetime.Seconds' => 'Seconds',
+    'ivopetkov.form-element.rich-textarea.OpenURL' => 'Open URL',
+    'ivopetkov.form-element.rich-textarea.Email' => 'Email',
+    'ivopetkov.form-element.rich-textarea.Call' => 'Call',
+    'ivopetkov.form-element.rich-textarea.Copy' => 'Copy',
+    'ivopetkov.form-element.rich-textarea.Share' => 'Share',
 ];
