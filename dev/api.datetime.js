@@ -113,16 +113,18 @@ for (var i = 0; i < elements.length; i++) {
             if (!showYear) {
                 value = value.replace('0000-', leapYear + '-');
             }
+            var hours = 0;
+            if (showTime) {
+                hours = getDateValueTimePart(value, 0, 0);
+            }
             if (value !== '' && !showDate) {
-                value = '1111-11-11T' + value;
+                value = '1111-11-11T' + (hours > 23 ? 23 : hours).toString().padStart(2, '0') + ':' + getDateValueTimePart(value, 1, 0).toString().padStart(2, '0') + ':' + getDateValueTimePart(value, 2, 0).toString().padStart(2, '0');
             }
             var date = value !== '' ? new Date(value) : getCurrentDateObject();
             if (!showYear) {
                 date.setFullYear(leapYear);
             }
-            var hours = 0;
             if (showTime) {
-                hours = getDateValueTimePart(value, 0, 0);
                 date.setHours(hours > 23 ? 23 : hours);
                 date.setMinutes(getDateValueTimePart(value, 1, 0));
                 date.setSeconds(getDateValueTimePart(value, 2, 0));
@@ -178,6 +180,7 @@ for (var i = 0; i < elements.length; i++) {
         var setValue = function (value, updateButtonHTML, updatePickerHTML) {
             if (input.value !== value) {
                 input.value = value;
+                contextDate = getContextDateFromValue();
                 input.dispatchEvent(new Event('change', { 'bubbles': true }));
                 if (updateButtonHTML && isButtonType) {
                     updateButtonText();
@@ -513,10 +516,7 @@ for (var i = 0; i < elements.length; i++) {
                 }, function (value) {
                     var hours = value !== '' ? parseInt(value) : 0;
                     contextDate.hours = hours;
-                    if (showTimeDuration) {
-                        hours = 23;
-                    }
-                    contextDate.date.setHours(hours);
+                    contextDate.date.setHours(showTimeDuration && hours > 23 ? 23 : hours);
                 });
                 makeTimePartOptionTooltip(timeMinutesInput, 'tm', 59, false, 'minutes', 'minute', function () {
                     return hasTime(input.value) ? getDateValueTimePart(input.value, 1).toString().padStart(2, '0') : '';
@@ -806,6 +806,7 @@ for (var i = 0; i < elements.length; i++) {
 
         element.setValue = function (value) {
             input.value = value;
+            contextDate = getContextDateFromValue();
             if (isButtonType) {
                 updateButtonText();
             } else {
