@@ -42,7 +42,7 @@ if ($accept !== '') {
             $tempAcceptTypes[] = '.' . $acceptType;
         }
     }
-    $accept = join(',', $tempAcceptTypes);
+    $accept = implode(',', $tempAcceptTypes);
 }
 
 $maxSize = '';

@@ -76,7 +76,7 @@ if ($type === 'button') {
 
     $fixTimeLength = function ($time) { // 1:20 > 01:20
         $parts = explode(':', $time);
-        for ($i = 0; $i < sizeof($parts); $i++) {
+        for ($i = 0; $i < count($parts); $i++) {
             $parts[$i] = str_pad($parts[$i], 2, '0', STR_PAD_LEFT);
         }
         return implode(':', $parts);
