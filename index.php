@@ -26,6 +26,7 @@ $context->classes
 $app->components
     //->addTag('form-element-label', 'file:' . $context->dir . '/components/label.php')
     ->addTag('form-element-checkbox', 'file:' . $context->dir . '/components/checkbox.php')
+    ->addTag('form-element-html', 'file:' . $context->dir . '/components/html.php')
     ->addTag('form-element-file', 'file:' . $context->dir . '/components/file.php')
     ->addTag('form-element-hidden', 'file:' . $context->dir . '/components/hidden.php')
     ->addTag('form-element-image', 'file:' . $context->dir . '/components/image.php')
