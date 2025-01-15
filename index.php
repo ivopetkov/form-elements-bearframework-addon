@@ -24,7 +24,6 @@ $context->classes
     ->add('IvoPetkov\BearFrameworkAddons\FormElements\*', 'classes/*.php');
 
 $app->components
-    //->addTag('form-element-label', 'file:' . $context->dir . '/components/label.php')
     ->addTag('form-element-checkbox', 'file:' . $context->dir . '/components/checkbox.php')
     ->addTag('form-element-html', 'file:' . $context->dir . '/components/html.php')
     ->addTag('form-element-file', 'file:' . $context->dir . '/components/file.php')

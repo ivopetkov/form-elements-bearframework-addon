@@ -19,6 +19,10 @@ for (var i = 0; i < elements.length; i++) {
             return element;
         };
 
+        element.getName = function () {
+            return input.getAttribute('name');
+        };
+
         element.getValue = function () {
             if (element.isChecked()) {
                 return input.value;
@@ -28,7 +32,7 @@ for (var i = 0; i < elements.length; i++) {
 
         element.setValue = function (value) {
             var isChecked = element.isChecked();
-            if (value === true || value === 1 || value === '1') {
+            if (value === true || value === 1 || value === '1' || value === 'on') {
                 if (!isChecked) {
                     element.check();
                 }

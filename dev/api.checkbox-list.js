@@ -20,12 +20,20 @@ for (var i = 0; i < elements.length; i++) {
             return element;
         };
 
+        element.getName = function () {
+            return input.getAttribute('name');
+        };
+
         element.getValue = function () {
             return input.value;
         };
 
         element.setValue = function (value) {
-            var valueParts = value !== null && value.length > 0 ? JSON.parse(value) : [];
+            try {
+                var valueParts = value !== null && value.length > 0 ? JSON.parse(value) : [];
+            } catch (e) {
+                throw new Error('Only empty string or JSON allowed!');
+            }
             input.value = valueParts.length > 0 ? JSON.stringify(valueParts) : '';
             var setValueParts = [];
             for (var i = 0; i < checkboxes.length; i++) {

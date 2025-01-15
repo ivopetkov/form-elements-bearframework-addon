@@ -17,6 +17,8 @@ for (var i = 0; i < elements.length; i++) {
         var textElement = element.querySelector("[data-form-element-component='text']");
 
         var input = element.querySelector("input");
+        var labels = element.querySelectorAll("label");
+        var label = labels[labels.length - 1];
 
         var maxSize = input.getAttribute('data-form-element-data-max-size');
         if (maxSize === '') {
@@ -26,6 +28,10 @@ for (var i = 0; i < elements.length; i++) {
         }
 
         input.getFormElementContainer = function () {
+            return element;
+        };
+
+        label.getFormElementContainer = function () {
             return element;
         };
 
@@ -39,6 +45,10 @@ for (var i = 0; i < elements.length; i++) {
                 }
             }
             return null;
+        };
+
+        element.getName = function () {
+            return input.getAttribute('name');
         };
 
         element.getValue = function () {
@@ -66,7 +76,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.setValue = function (value) {
-            if (value === '') {
+            if (value === null || value === '') {
                 input.value = ''; // clear the files
                 input.setAttribute('data-value', '');
                 input.dispatchEvent(new Event('change'));

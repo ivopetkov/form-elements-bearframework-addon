@@ -21,6 +21,10 @@ for (var i = 0; i < elements.length; i++) {
             return element;
         };
 
+        element.getName = function () {
+            return input.getAttribute('name');
+        };
+
         element.getValue = function () { // Returns empty string if the input is empty
             return input.value;
         };

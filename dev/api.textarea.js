@@ -21,6 +21,10 @@ for (var i = 0; i < elements.length; i++) {
             return element;
         };
 
+        element.getName = function () {
+            return textarea.getAttribute('name');
+        };
+
         element.getValue = function () {  // Returns empty string if the textarea is empty
             return textarea.value;
         };

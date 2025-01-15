@@ -42,6 +42,10 @@ for (var i = 0; i < elements.length; i++) {
             return null;
         };
 
+        element.getName = function () {
+            return input.getAttribute('name');
+        };
+
         element.getValue = function () {
             var files = input.files;
             var filesCount = files.length;
@@ -67,7 +71,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.setValue = function (value) {
-            if (value === '') {
+            if (value === null || value === '') {
                 input.value = ''; // clear the files
                 input.setAttribute('data-value', '');
                 input.dispatchEvent(new Event('change'));

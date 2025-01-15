@@ -800,6 +800,10 @@ for (var i = 0; i < elements.length; i++) {
             return element;
         };
 
+        element.getName = function () {
+            return input.getAttribute('name');
+        };
+
         element.getValue = function () {
             return input.value;
         };
