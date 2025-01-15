@@ -18,6 +18,8 @@ for (var i = 0; i < elements.length; i++) {
         var previewLabel = textElement.parentNode;
 
         var input = element.querySelector("input");
+        var labels = element.querySelectorAll("label");
+        var label = labels[labels.length - 1];
 
         var maxSize = input.getAttribute('data-form-element-data-max-size');
         if (maxSize === '') {
@@ -27,6 +29,10 @@ for (var i = 0; i < elements.length; i++) {
         }
 
         input.getFormElementContainer = function () {
+            return element;
+        };
+
+        label.getFormElementContainer = function () {
             return element;
         };
 
