@@ -66,7 +66,7 @@ for (var i = 0; i < elements.length; i++) {
                     value.push(uploadedFileValue);
                 } else {
                     value.push({
-                        value: file.name,
+                        value: file.name, // todo rename to name in next major version
                         filename: null,
                         size: file.size,
                         type: file.type,
@@ -84,6 +84,23 @@ for (var i = 0; i < elements.length; i++) {
             } else {
                 throw new Error('Only empty string allowed!');
             }
+        };
+
+        element.getUploadDetails = function (value) { // returns information about the client file for the value specified (that is returned by the server)
+            var files = input.files;
+            var filesCount = files.length;
+            for (var i = 0; i < filesCount; i++) {
+                var file = files[i];
+                var uploadedFileValue = getUploadedFileValue(file);
+                if (uploadedFileValue === value) {
+                    return {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                    }
+                }
+            }
+            return null;
         };
 
         element.hasPendingUploads = function () {
@@ -142,14 +159,14 @@ for (var i = 0; i < elements.length; i++) {
                                 onSuccess();
                             }
                         },
-                        function () { // on abort
+                        function (errorMessage) { // on abort
                             if (typeof onAbort !== 'undefined') {
-                                onAbort();
+                                onAbort(errorMessage);
                             }
                         },
-                        function () { // on fail
+                        function (errorMessage) { // on fail
                             if (typeof onFail !== 'undefined') {
-                                onFail();
+                                onFail(errorMessage);
                             }
                         },
                         function (progress) { // on progress

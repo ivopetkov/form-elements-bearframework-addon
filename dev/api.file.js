@@ -65,7 +65,7 @@ for (var i = 0; i < elements.length; i++) {
                     value.push(uploadedFileValue);
                 } else {
                     value.push({
-                        value: file.name,
+                        value: file.name, // todo rename to name in next major version
                         filename: null,
                         size: file.size,
                         type: file.type,
@@ -85,6 +85,23 @@ for (var i = 0; i < elements.length; i++) {
             }
         };
 
+        element.getUploadDetails = function (value) { // returns information about the client file for the value specified (that is returned by the server)
+            var files = input.files;
+            var filesCount = files.length;
+            for (var i = 0; i < filesCount; i++) {
+                var file = files[i];
+                var uploadedFileValue = getUploadedFileValue(file);
+                if (uploadedFileValue === value) {
+                    return {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                    }
+                }
+            }
+            return null;
+        };
+
         element.hasPendingUploads = function () {
             var files = input.files;
             var filesCount = files.length;
@@ -98,7 +115,6 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.upload = function (uploadHandler, onSuccess, onAbort, onFail, onProgress) {
-
             var files = input.files;
             var filesCount = files.length;
             var pendingFileUploadsCount = 0;
