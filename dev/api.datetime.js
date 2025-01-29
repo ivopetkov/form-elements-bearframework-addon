@@ -122,7 +122,7 @@ for (var i = 0; i < elements.length; i++) {
             }
             var date = value !== '' ? new Date(value) : getCurrentDateObject();
             if (!showYear) {
-                date.setFullYear(leapYear);
+                setDateYear(date, leapYear);
             }
             if (showTime) {
                 date.setHours(hours > 23 ? 23 : hours);
@@ -135,11 +135,31 @@ for (var i = 0; i < elements.length; i++) {
         var contextDate = getContextDateFromValue();
 
         var changeContextDateMonth = (monthChange) => {
-            contextDate.date.setMonth(contextDate.date.getMonth() + monthChange);
+            setDateMonth(contextDate.date, contextDate.date.getMonth() + monthChange);
             if (!showYear) {
-                contextDate.date.setFullYear(leapYear);
+                setDateYear(contextDate.date, leapYear);
             }
             updatePicker();
+        };
+
+        var getLastDateOfMonth = function (year, month) {
+            return (new Date(year, month + 1, 0)).getDate();
+        };
+
+        var setDateMonth = function (dateObject, month) { // moves the day if not exists
+            var currentDate = dateObject.getDate();
+            dateObject.setDate(1);
+            dateObject.setMonth(month);
+            var lastDate = getLastDateOfMonth(dateObject.getFullYear(), month);
+            dateObject.setDate(lastDate < currentDate ? lastDate : currentDate);
+        };
+
+        var setDateYear = function (dateObject, year) { // moves the day if not exists
+            var currentDate = dateObject.getDate();
+            dateObject.setDate(1);
+            dateObject.setFullYear(year);
+            var lastDate = getLastDateOfMonth(year, dateObject.getMonth());
+            dateObject.setDate(lastDate < currentDate ? lastDate : currentDate);
         };
 
         var dateToString = function (dateTime) {
@@ -583,7 +603,7 @@ for (var i = 0; i < elements.length; i++) {
                         optionElement.innerText = formatDate('2000-' + i + '-1', ['month']);
                         optionElement.addEventListener('click', (function (month) {
                             return function () {
-                                contextDate.date.setMonth(month - 1);
+                                setDateMonth(contextDate.date, month - 1);
                                 hideTooltip();
                                 updatePicker();
                             };
@@ -605,7 +625,7 @@ for (var i = 0; i < elements.length; i++) {
                             optionElement.innerText = i.toString();
                             optionElement.addEventListener('click', (function (year) {
                                 return function () {
-                                    contextDate.date.setFullYear(year);
+                                    setDateYear(contextDate.date, year);
                                     hideTooltip();
                                     updatePicker();
                                 };
@@ -757,7 +777,7 @@ for (var i = 0; i < elements.length; i++) {
                 if (month >= 1 && month <= 12) {
                     month--;
                     if (newContextDate.getMonth() !== month) {
-                        newContextDate.setMonth(month);
+                        setDateMonth(newContextDate, month);
                         hasChange = true;
                     }
                 }
@@ -766,7 +786,7 @@ for (var i = 0; i < elements.length; i++) {
                 year = parseInt(year);
                 if (year > 0) {
                     if (newContextDate.getFullYear() !== year) {
-                        newContextDate.setFullYear(year);
+                        setDateYear(newContextDate, year);
                         hasChange = true;
                     }
                 }
