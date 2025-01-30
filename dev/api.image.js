@@ -86,6 +86,10 @@ for (var i = 0; i < elements.length; i++) {
             }
         };
 
+        element.hasValue = function () {
+            return element.getValue() !== '';
+        };
+
         element.getUploadDetails = function (value) { // returns information about the client file for the value specified (that is returned by the server)
             var files = input.files;
             var filesCount = files.length;
@@ -214,6 +218,11 @@ for (var i = 0; i < elements.length; i++) {
 
         input.addEventListener('change', function () {
             updateUI();
+            if (element.hasValue()) {
+                input.setAttribute('data-has-value', 'true');
+            } else {
+                input.removeAttribute('data-has-value');
+            }
             setTimeout(updateUI, 1); // Needed for form.reset();
         }, false);
 

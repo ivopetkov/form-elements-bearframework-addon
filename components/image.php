@@ -81,7 +81,7 @@ if ($showClearButton) {
     echo '<span data-form-element-component="clear-button" title="' . htmlentities($clearButtonTitle) . '" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';" tabindex="0"></span>';
 }
 echo '</label>';
-echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '" id="' . htmlentities($elementID) . '" type="file" accept=".png,.jpg,.jpeg,.gif"' . ($maxSize !== '' ? ' data-form-element-data-max-size="' . $maxSize . '"' : '') . '>';
+echo '<input name="' . htmlentities($name) . '" data-value="' . htmlentities($value) . '"' . (strlen($value) > 0 ? ' data-has-value="true"' : '') . ' id="' . htmlentities($elementID) . '" type="file" accept=".png,.jpg,.jpeg,.gif"' . ($maxSize !== '' ? ' data-form-element-data-max-size="' . $maxSize . '"' : '') . '>';
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.image.js');
 $js = include __DIR__ . '/image.api.min.js.php';
