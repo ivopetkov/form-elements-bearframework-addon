@@ -28,6 +28,14 @@ for (var i = 0; i < elements.length; i++) {
             maxSize = parseInt(maxSize);
         }
 
+        var draggedFiles = null;
+        var getSelectedFiles = function () {
+            if (draggedFiles !== null) {
+                return draggedFiles;
+            }
+            return input.files;
+        };
+
         input.getFormElementContainer = function () {
             return element;
         };
@@ -35,6 +43,29 @@ for (var i = 0; i < elements.length; i++) {
         label.getFormElementContainer = function () {
             return element;
         };
+
+        var dragOverHandler = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            label.setAttribute('data-form-element-event', 'drag-over');
+        };
+
+        var dragLeaveHandler = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            label.removeAttribute('data-form-element-event');
+        };
+
+        label.addEventListener('dragenter', dragOverHandler, false);
+        label.addEventListener('dragover', dragOverHandler, false);
+        label.addEventListener('dragleave', dragLeaveHandler, false);
+        label.addEventListener('drop', function (e) {
+            dragLeaveHandler(e);
+            draggedFiles = e.dataTransfer.files;
+            resetDraggedFilesOnInputChange = false;
+            input.dispatchEvent(new Event('change', { 'bubbles': true }));
+            resetDraggedFilesOnInputChange = true;
+        }, false);
 
         var filesUploadValues = [];
 
@@ -53,7 +84,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.getValue = function () {
-            var files = input.files;
+            var files = getSelectedFiles();
             var filesCount = files.length;
             if (filesCount === 0) {
                 return input.getAttribute('data-value');
@@ -78,9 +109,10 @@ for (var i = 0; i < elements.length; i++) {
 
         element.setValue = function (value) {
             if (value === null || value === '') {
+                draggedFiles = null;
                 input.value = ''; // clear the files
                 input.setAttribute('data-value', '');
-                input.dispatchEvent(new Event('change'));
+                input.dispatchEvent(new Event('change', { 'bubbles': true }));
             } else {
                 throw new Error('Only empty string allowed!');
             }
@@ -91,7 +123,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.getUploadDetails = function (value) { // returns information about the client file for the value specified (that is returned by the server)
-            var files = input.files;
+            var files = getSelectedFiles();
             var filesCount = files.length;
             for (var i = 0; i < filesCount; i++) {
                 var file = files[i];
@@ -108,7 +140,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.hasPendingUploads = function () {
-            var files = input.files;
+            var files = getSelectedFiles();
             var filesCount = files.length;
             for (var i = 0; i < filesCount; i++) {
                 var uploadedFileValue = getUploadedFileValue(files[i]);
@@ -120,7 +152,7 @@ for (var i = 0; i < elements.length; i++) {
         };
 
         element.upload = function (uploadHandler, onSuccess, onAbort, onFail, onProgress) {
-            var files = input.files;
+            var files = getSelectedFiles();
             var filesCount = files.length;
             var pendingFileUploadsCount = 0;
             var uploadsProgress = [];
@@ -196,7 +228,8 @@ for (var i = 0; i < elements.length; i++) {
         }
 
         var updateUI = function () {
-            var selectedFilesCount = input.files.length;
+            var selectedFiles = getSelectedFiles();
+            var selectedFilesCount = selectedFiles.length;
             if (selectedFilesCount === 0) {
                 textElement.innerText = element.getValue().length === 0 ? 'CHOOSE_TEXT_TO_REPLACE' : '';
                 if (clearButton !== null) {
@@ -212,11 +245,15 @@ for (var i = 0; i < elements.length; i++) {
                 reader.addEventListener("load", function () {
                     previewLabel.style.backgroundImage = 'url(' + reader.result + ')';
                 }, false);
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(selectedFiles[0]);
             }
         };
 
+        var resetDraggedFilesOnInputChange = true;
         input.addEventListener('change', function () {
+            if (resetDraggedFilesOnInputChange) {
+                draggedFiles = null;
+            }
             updateUI();
             if (element.hasValue()) {
                 input.setAttribute('data-has-value', 'true');
