@@ -132,16 +132,6 @@ for (var i = 0; i < elements.length; i++) {
             return { date: date, hours: hours };
         };
 
-        var contextDate = getContextDateFromValue();
-
-        var changeContextDateMonth = (monthChange) => {
-            setDateMonth(contextDate.date, contextDate.date.getMonth() + monthChange);
-            if (!showYear) {
-                setDateYear(contextDate.date, leapYear);
-            }
-            updatePicker();
-        };
-
         var getLastDateOfMonth = function (year, month) {
             return (new Date(year, month + 1, 0)).getDate();
         };
@@ -195,6 +185,16 @@ for (var i = 0; i < elements.length; i++) {
                 }
             }
             return false;
+        };
+
+        var contextDate = getContextDateFromValue();
+
+        var changeContextDateMonth = (monthChange) => {
+            setDateMonth(contextDate.date, contextDate.date.getMonth() + monthChange);
+            if (!showYear) {
+                setDateYear(contextDate.date, leapYear);
+            }
+            updatePicker();
         };
 
         var setValue = function (value, updateButtonHTML, updatePickerHTML) {
