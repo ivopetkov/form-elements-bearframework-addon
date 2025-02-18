@@ -197,7 +197,12 @@ for (var i = 0; i < elements.length; i++) {
                             element.querySelector('[data-rich-textarea-highlight-tooltip-component="copy"]').addEventListener('click', function () {
                                 navigator.clipboard.writeText(copyValue);
                                 hideTooltip();
-                                // todo show notification
+                                clientPackages.get('notifications')
+                                    .then((notifications) => {
+                                        notifications.show('COPIED_TEXT_TO_REPLACE', { autoHide: true });
+                                    }).catch((e) => {
+
+                                    });
                             });
                         }
                         if (hasShare) {

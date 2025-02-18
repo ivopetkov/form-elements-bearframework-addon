@@ -38,6 +38,7 @@ $js = str_replace('EMAIL_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-texta
 $js = str_replace('CALL_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Call'), $js);
 $js = str_replace('COPY_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Copy'), $js);
 $js = str_replace('SHARE_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Share'), $js);
+$js = str_replace('COPIED_TEXT_TO_REPLACE', __('ivopetkov.form-element.rich-textarea.Copied'), $js);
 echo '<script>' . $js . '</script>';
 echo '</div>';
 echo '</body></html>';

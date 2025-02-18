@@ -16,4 +16,5 @@ return [
     'ivopetkov.form-element.rich-textarea.Call' => 'Обади се',
     'ivopetkov.form-element.rich-textarea.Copy' => 'Копирай',
     'ivopetkov.form-element.rich-textarea.Share' => 'Сподели',
+    'ivopetkov.form-element.rich-textarea.Copied' => 'Копиран',
 ];
