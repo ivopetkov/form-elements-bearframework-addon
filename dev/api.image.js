@@ -61,7 +61,27 @@ for (var i = 0; i < elements.length; i++) {
         label.addEventListener('dragleave', dragLeaveHandler, false);
         label.addEventListener('drop', function (e) {
             dragLeaveHandler(e);
-            draggedFiles = e.dataTransfer.files;
+            var accept = input.getAttribute('accept');
+            var acceptParts = accept !== null && accept !== '' ? accept.split(',') : [];
+            acceptParts = acceptParts.map(function (v) {
+                return v.trim().toLowerCase();
+            });
+            draggedFiles = [];
+            var dataTransferFiles = e.dataTransfer.files;
+            for (var i = 0; i < dataTransferFiles.length; i++) {
+                var dataTransferFile = dataTransferFiles[i];
+                var name = dataTransferFile.name.toLowerCase();
+                var found = false;
+                for (var acceptPart of acceptParts) {
+                    if (acceptPart === name.substring(name.length - acceptPart.length)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    draggedFiles.push(dataTransferFile);
+                }
+            }
             resetDraggedFilesOnInputChange = false;
             input.dispatchEvent(new Event('change', { 'bubbles': true }));
             resetDraggedFilesOnInputChange = true;
