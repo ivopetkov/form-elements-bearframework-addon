@@ -15,7 +15,7 @@ for (var i = 0; i < elements.length; i++) {
 
         var input = element.querySelector('input');
 
-        input.getFormElementContainer = function(){
+        input.getFormElementContainer = function () {
             return element;
         };
 
@@ -29,6 +29,17 @@ for (var i = 0; i < elements.length; i++) {
 
         element.setValue = function (value) {
             input.value = value;
+        };
+
+        element.focus = function () {
+            var focusTarget = element.getFocusTarget();
+            if (focusTarget !== null) {
+                focusTarget.focus();
+            }
+        };
+
+        element.getFocusTarget = function () {
+            return input;
         };
 
         element.setVisibility = function (visible) {

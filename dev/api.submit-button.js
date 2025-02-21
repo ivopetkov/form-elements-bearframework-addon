@@ -17,8 +17,21 @@ for (var i = 0; i < elements.length; i++) {
         button.addEventListener('keydown', function (event) {
             if (event.keyCode === 13) {
                 button.click();
+                event.preventDefault();
+                event.stopPropagation();
             }
         });
+
+        element.focus = function () {
+            var focusTarget = element.getFocusTarget();
+            if (focusTarget !== null) {
+                focusTarget.focus();
+            }
+        };
+
+        element.getFocusTarget = function () {
+            return button;
+        };
 
     })(elements[i]);
 }

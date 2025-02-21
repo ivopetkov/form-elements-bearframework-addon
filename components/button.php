@@ -28,7 +28,7 @@ echo '</style>';
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('button', $attributes) . '>';
 echo '<span ' . Utilities::getElementAttributes($attributes) . ' onclick="' . htmlentities($onClick) . '" role="button" tabindex="0">' . htmlspecialchars($text) . '</span>';
-//$js = file_get_contents(__DIR__ . '/../dev/button.js');
+//$js = file_get_contents(__DIR__ . '/../dev/api.button.js');
 $js = include __DIR__ . '/button.min.js.php';
 echo '<script>' . $js . '</script>';
 echo '</div>';

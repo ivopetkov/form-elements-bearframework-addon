@@ -59,6 +59,25 @@ for (var i = 0; i < elements.length; i++) {
             }
         };
 
+        element.focus = function () {
+            var focusTarget = element.getFocusTarget();
+            if (focusTarget !== null) {
+                focusTarget.focus();
+            }
+        };
+
+        element.getFocusTarget = function () {
+            var firstCheckbox = element.querySelector('input[type="checkbox"]');
+            if (firstCheckbox !== null) {
+                return firstCheckbox;
+            }
+            var textbox = element.querySelector('[data-form-element-component="checkbox-list-option-textbox"]');
+            if (textbox !== null) {
+                return textbox;
+            }
+            return null;
+        };
+
         element.setVisibility = function (visible) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };

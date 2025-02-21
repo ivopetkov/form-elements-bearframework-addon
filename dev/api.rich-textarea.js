@@ -621,6 +621,17 @@ for (var i = 0; i < elements.length; i++) {
             }
         };
 
+        element.focus = function () {
+            var focusTarget = element.getFocusTarget();
+            if (focusTarget !== null) {
+                focusTarget.focus();
+            }
+        };
+
+        element.getFocusTarget = function () {
+            return contentContainer;
+        };
+
         element.setVisibility = function (visible) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };

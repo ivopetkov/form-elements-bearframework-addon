@@ -61,6 +61,17 @@ for (var i = 0; i < elements.length; i++) {
             }
         };
 
+        element.focus = function () {
+            var focusTarget = element.getFocusTarget();
+            if (focusTarget !== null) {
+                focusTarget.focus();
+            }
+        };
+
+        element.getFocusTarget = function () {
+            return input;
+        };
+
         element.setVisibility = function (visible) {
             element.setAttribute('data-form-element-visibility', visible ? '1' : '0');
         };
@@ -76,9 +87,9 @@ for (var i = 0; i < elements.length; i++) {
             }
         });
 
-        input.focus = function () {
-            input.nextSibling.focus();
-        };
+        // input.focus = function () {
+        //     input.nextSibling.focus();
+        // };
 
     })(elements[i]);
 }

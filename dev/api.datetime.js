@@ -43,8 +43,10 @@ for (var i = 0; i < elements.length; i++) {
 
         if (isButtonType) {
             button.addEventListener('keydown', function (event) {
-                if (event.keyCode === 13) {
+                if (event.keyCode === 32) { // space
                     button.click();
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
             });
         }
@@ -836,6 +838,20 @@ for (var i = 0; i < elements.length; i++) {
             } else {
                 updatePicker();
             }
+        };
+
+        element.focus = function () {
+            var focusTarget = element.getFocusTarget();
+            if (focusTarget !== null) {
+                focusTarget.focus();
+            }
+        };
+
+        element.getFocusTarget = function () {
+            if (isButtonType) {
+                return button;
+            }
+            return null;
         };
 
         element.setVisibility = function (visible) {

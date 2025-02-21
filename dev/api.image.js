@@ -44,6 +44,14 @@ for (var i = 0; i < elements.length; i++) {
             return element;
         };
 
+        label.addEventListener('keydown', function (event) {
+            if (event.keyCode === 13 || event.keyCode === 32) { // space and enter
+                label.click();
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+
         var dragOverHandler = function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -233,6 +241,17 @@ for (var i = 0; i < elements.length; i++) {
                 }
             };
             uploadNextFile(0);
+        };
+
+        element.focus = function () {
+            var focusTarget = element.getFocusTarget();
+            if (focusTarget !== null) {
+                focusTarget.focus();
+            }
+        };
+
+        element.getFocusTarget = function () {
+            return label;
         };
 
         element.setVisibility = function (visible) {
