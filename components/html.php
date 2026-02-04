@@ -25,7 +25,7 @@ echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('html', $attributes) . '>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
-echo '<div ' . Utilities::getElementAttributes($attributes) . '>' . $value . '</div>';
+echo '<div ' . Utilities::getElementAttributes('html', $attributes) . '>' . $value . '</div>';
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.html.js');
 $js = include __DIR__ . '/html.api.min.js.php';

@@ -42,7 +42,7 @@ echo Utilities::getDefaultStyles();
 echo '</style>';
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('submit-button', $attributes) . '>';
-echo '<span ' . Utilities::getElementAttributes($attributes) . ' onclick="' . htmlentities($onClick) . '" role="button" tabindex="0">' . htmlspecialchars($text) . '</span>';
+echo '<span ' . Utilities::getElementAttributes('submit-button', $attributes) . ' onclick="' . htmlentities($onClick) . '" role="button" tabindex="0">' . htmlspecialchars($text) . '</span>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.submit-button.js');
 $js = include __DIR__ . '/submit-button.min.js.php';
 echo '<script>' . $js . '</script>';

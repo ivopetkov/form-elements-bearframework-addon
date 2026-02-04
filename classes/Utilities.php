@@ -11,6 +11,11 @@ namespace IvoPetkov\BearFrameworkAddons\FormElements;
 
 class Utilities
 {
+    /**
+     * 
+     * @param array $attributes
+     * @return string
+     */
     static function getAttributesString(array $attributes): string
     {
         return implode(' ', array_map(function ($name, $value) {
@@ -18,6 +23,12 @@ class Utilities
         }, array_keys($attributes), $attributes));
     }
 
+    /**
+     * 
+     * @param string $type
+     * @param array $attributes
+     * @return string
+     */
     static function getContainerAttributes(string $type, array $attributes): string
     {
         $containerAttributes = [];
@@ -36,20 +47,27 @@ class Utilities
         return self::getAttributesString($containerAttributes);
     }
 
-    static function getElementAttributes(array $attributes): string
+    /**
+     * 
+     * @param string $type
+     * @param array $attributes
+     * @return string
+     */
+    static function getElementAttributes(string $type, array $attributes): string
     {
         $elementAttributes = $attributes;
         if (isset($elementAttributes['id'])) {
             unset($elementAttributes['id']);
         }
+        $addAriaLabel = $type !== 'html';
         if (isset($elementAttributes['label'])) {
-            if (!isset($elementAttributes['aria-label'])) {
+            if ($addAriaLabel && !isset($elementAttributes['aria-label'])) {
                 $elementAttributes['aria-label'] = $elementAttributes['label'];
             }
             unset($elementAttributes['label']);
         }
         if (isset($elementAttributes['labelhtml'])) {
-            if (!isset($elementAttributes['aria-label'])) {
+            if ($addAriaLabel && !isset($elementAttributes['aria-label'])) {
                 $elementAttributes['aria-label'] = strip_tags($elementAttributes['labelhtml']);
             }
             unset($elementAttributes['labelhtml']);
@@ -82,6 +100,11 @@ class Utilities
         return self::getAttributesString($elementAttributes);
     }
 
+    /**
+     * 
+     * @param array $attributes
+     * @return string
+     */
     static function getLabelElement(array $attributes): string
     {
         $componentName = isset($attributes['form-elements-internal-component-name']) ? $attributes['form-elements-internal-component-name'] : 'label';
@@ -93,6 +116,11 @@ class Utilities
         return '';
     }
 
+    /**
+     * 
+     * @param array $attributes
+     * @return string
+     */
     static function getHintElement(array $attributes): string
     {
         if (isset($attributes['hint'])) {
@@ -103,6 +131,11 @@ class Utilities
         return '';
     }
 
+    /**
+     * 
+     * @param array $attributes
+     * @return string
+     */
     static function getHintAfterElement(array $attributes): string
     {
         if (isset($attributes['hintafter'])) {
@@ -113,6 +146,10 @@ class Utilities
         return '';
     }
 
+    /**
+     * 
+     * @return string
+     */
     static function getDefaultStyles(): string
     {
         return '[data-form-element-type][data-form-element-visibility="0"]{display:none !important;}'; // !important is needed because the element may have style="display:..."

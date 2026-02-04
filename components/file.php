@@ -88,7 +88,7 @@ if ($labelElement !== '') {
     echo '</label>';
 }
 echo Utilities::getHintElement($attributes);
-echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes($attributes) . '" tabindex="0">';
+echo '<label for="' . htmlentities($elementID) . '" ' . Utilities::getElementAttributes('file', $attributes) . '" tabindex="0">';
 echo '<span data-form-element-component="text">' . htmlspecialchars(strlen($value) > 0 ? (strlen($valueText) === 0 ? $value : $valueText) : $chooseText) . '</span>';
 if ($showClearButton) {
     echo '<span data-form-element-component="clear-button" title="' . htmlentities($clearButtonTitle) . '" style="display:' . (strlen($value) > 0 ? 'inline-block' : 'none') . ';" tabindex="0"></span>';

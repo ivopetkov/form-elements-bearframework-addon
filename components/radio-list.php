@@ -38,7 +38,7 @@ foreach ($options as $option) {
 echo '<html><head>';
 echo '<style>' . Utilities::getDefaultStyles() . '</style>';
 echo '</head><body>';
-echo '<div ' . Utilities::getContainerAttributes('radio-list', $attributes) . ' ' . Utilities::getElementAttributes($attributes) . '>';
+echo '<div ' . Utilities::getContainerAttributes('radio-list', $attributes) . ' ' . Utilities::getElementAttributes('radio-list', $attributes) . '>';
 echo '<input type="hidden" name="' . htmlentities($elementName) . '" value="' . htmlentities($value) . '">';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);

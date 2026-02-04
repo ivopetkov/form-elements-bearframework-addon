@@ -26,7 +26,7 @@ echo '<div ' . Utilities::getContainerAttributes('textbox', $attributes) . '>';
 echo '<label>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
-echo '<input ' . Utilities::getElementAttributes($attributes) . '/>';
+echo '<input ' . Utilities::getElementAttributes('textbox', $attributes) . '/>';
 echo Utilities::getHintAfterElement($attributes);
 echo '</label>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.textbox.js');

@@ -40,7 +40,7 @@ echo '<style>' . Utilities::getDefaultStyles() . '</style>';
 echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes($elementTypeAttributeValue, $attributes) . $elementContainerAttributes . '>';
 echo '<label>';
-echo '<input ' . Utilities::getElementAttributes($attributes) . '/>';
+echo '<input ' . Utilities::getElementAttributes($elementTypeAttributeValue, $attributes) . '/>';
 echo Utilities::getLabelElement($labelAttributes);
 echo $component->getAttribute('form-elements-internal-label-html');
 echo '</label>';

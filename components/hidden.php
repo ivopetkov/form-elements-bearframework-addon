@@ -16,7 +16,7 @@ $attributes['type'] = 'hidden';
 
 echo '<html><body>';
 echo '<div ' . Utilities::getContainerAttributes('hidden', $attributes) . '>';
-echo '<input ' . Utilities::getElementAttributes($attributes) . '/>';
+echo '<input ' . Utilities::getElementAttributes('hidden', $attributes) . '/>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.hidden.js');
 $js = include __DIR__ . '/hidden.api.min.js.php';
 echo '<script>' . $js . '</script>';

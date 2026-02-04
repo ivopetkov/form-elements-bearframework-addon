@@ -106,7 +106,7 @@ if ($type === 'button') {
     }
     echo '<span data-form-element-component="button" role="button" tabindex="0">' . ($formatDateValue !== '' ? $app->localization->formatDate($formatDateValue, $formatDateOptions) : '') . '</span>';
 }
-echo '<input type="hidden"' . Utilities::getElementAttributes($attributes) . '/>';
+echo '<input type="hidden"' . Utilities::getElementAttributes('datetime', $attributes) . '/>';
 if ($type === 'button') {
     echo '<div></div>';
 } else if ($type === 'block') {

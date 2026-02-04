@@ -21,7 +21,7 @@ echo '<div ' . Utilities::getContainerAttributes('password', $attributes) . '>';
 echo '<label>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
-echo '<input ' . Utilities::getElementAttributes($attributes) . '/>';
+echo '<input ' . Utilities::getElementAttributes('password', $attributes) . '/>';
 echo Utilities::getHintAfterElement($attributes);
 echo '</label>';
 //$js = file_get_contents(__DIR__ . '/../dev/api.password.js');

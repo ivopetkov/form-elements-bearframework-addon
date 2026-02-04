@@ -37,7 +37,7 @@ foreach ($options as $option) {
 echo '<html><head>';
 echo '<style>' . Utilities::getDefaultStyles() . '</style>';
 echo '</head><body>';
-echo '<div ' . Utilities::getContainerAttributes('checkbox-list', $attributes) . ' ' . Utilities::getElementAttributes($attributes) . '>';
+echo '<div ' . Utilities::getContainerAttributes('checkbox-list', $attributes) . ' ' . Utilities::getElementAttributes('checkbox-list', $attributes) . '>';
 echo '<input type="hidden" name="' . htmlentities($elementName) . '" value="' . htmlentities($value) . '">';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);

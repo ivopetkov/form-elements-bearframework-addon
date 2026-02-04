@@ -29,7 +29,7 @@ echo '</head><body>';
 echo '<div ' . Utilities::getContainerAttributes('rich-textarea', $attributes) . '>';
 echo Utilities::getLabelElement($attributes);
 echo Utilities::getHintElement($attributes);
-echo '<div contenteditable="true" ' . Utilities::getElementAttributes($attributes) . '>' . str_replace("\\n", "<br>", htmlentities($value)) . '</div>';
+echo '<div contenteditable="true" ' . Utilities::getElementAttributes('rich-textarea', $attributes) . '>' . str_replace("\\n", "<br>", htmlentities($value)) . '</div>';
 echo Utilities::getHintAfterElement($attributes);
 //$js = file_get_contents(__DIR__ . '/../dev/api.rich-textarea.js');
 $js = include __DIR__ . '/rich-textarea.api.min.js.php';
