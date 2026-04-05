@@ -63,6 +63,11 @@ $elementID = 'fe' . md5(uniqid());
 $attributes['data-form-element-component'] = 'button';
 
 $chooseText = __('ivopetkov.form-element.file.Choose');
+if (isset($attributes['choosetext'])) {
+    $chooseText = $attributes['choosetext'];
+    unset($attributes['choosetext']);
+}
+
 $clearButtonTitle = __('ivopetkov.form-element.file.ClearButton');
 
 echo '<html><head>';

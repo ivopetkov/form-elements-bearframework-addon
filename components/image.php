@@ -50,6 +50,11 @@ if (strlen($valuePreviewUrl) > 0) {
 }
 
 $chooseText = __('ivopetkov.form-element.image.Choose');
+if (isset($attributes['choosetext'])) {
+    $chooseText = $attributes['choosetext'];
+    unset($attributes['choosetext']);
+}
+
 $clearButtonTitle = __('ivopetkov.form-element.image.ClearButton');
 
 echo '<html><head>';
