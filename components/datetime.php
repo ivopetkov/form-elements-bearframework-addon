@@ -14,7 +14,7 @@ $app = App::get();
 
 $attributes = $component->getAttributes();
 
-$type = 'button'; // button (default), block
+$type = 'button'; // button (default), block, native
 if (isset($attributes['type'])) {
     $type = (string)$attributes['type'];
     unset($attributes['type']);
@@ -27,42 +27,46 @@ $showTime = isset($attributes['showtime']) && $attributes['showtime'] === 'true'
 $showSeconds = isset($attributes['showseconds']) && $attributes['showseconds'] === 'true';
 $showTimeDuration = isset($attributes['showtimeduration']) && $attributes['showtimeduration'] === 'true';
 
-if (!isset($attributes['hourslabel'])) {
-    $attributes['hourslabel'] = __('ivopetkov.form-element.datetime.Hours');
-}
-if (!isset($attributes['minuteslabel'])) {
-    $attributes['minuteslabel'] = __('ivopetkov.form-element.datetime.Minutes');
-}
-if (!isset($attributes['secondslabel'])) {
-    $attributes['secondslabel'] = __('ivopetkov.form-element.datetime.Seconds');
+if ($type !== 'native') {
+    if (!isset($attributes['hourslabel'])) {
+        $attributes['hourslabel'] = __('ivopetkov.form-element.datetime.Hours');
+    }
+    if (!isset($attributes['minuteslabel'])) {
+        $attributes['minuteslabel'] = __('ivopetkov.form-element.datetime.Minutes');
+    }
+    if (!isset($attributes['secondslabel'])) {
+        $attributes['secondslabel'] = __('ivopetkov.form-element.datetime.Seconds');
+    }
 }
 
 echo '<html><head>';
 echo '<link rel="client-packages-embed" name="tooltip">';
 echo '<style>'
-    . Utilities::getDefaultStyles()
-    . '[data-form-element-type="datetime"]{position:relative;user-select:none;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="button"]{display:inline-block;min-width:20px;min-height:20px;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="header"]{display:flex;flex-direction:row;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="previous-button"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="next-button"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="clear-button"]{cursor:pointer;display:inline-block;min-width:10px;min-height:10px;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="month-button"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="year-button"]{cursor:pointer;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="day"]{display:inline-block;width:calc(100% / 7);}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="date"]{cursor:default;display:inline-block;width:calc(100% / 7);}' //height:40px;margin:8px max(0px,calc((100% - 7*44px)/14));
-    . '[data-form-element-type="datetime"] [data-form-element-component="date"]:not([data-form-element-data-disabled]){cursor:pointer;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="months"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="years"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="time-hours"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="time-minutes"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="time-seconds"]{overflow:auto;overscroll-behavior:none;height:200px;}'
-    . '[data-form-element-type="datetime"] [data-form-element-component="month"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="year"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="time-hour"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="time-minute"],'
-    . '[data-form-element-type="datetime"] [data-form-element-component="time-second"]{cursor:pointer;}'
-    . '</style>';
+    . Utilities::getDefaultStyles();
+if ($type !== 'native') {
+    echo '[data-form-element-type="datetime"]{position:relative;user-select:none;}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="button"]{display:inline-block;min-width:20px;min-height:20px;}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="header"]{display:flex;flex-direction:row;}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="previous-button"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="next-button"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="clear-button"]{cursor:pointer;display:inline-block;min-width:10px;min-height:10px;}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="month-button"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="year-button"]{cursor:pointer;}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="day"]{display:inline-block;width:calc(100% / 7);}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="date"]{cursor:default;display:inline-block;width:calc(100% / 7);}' //height:40px;margin:8px max(0px,calc((100% - 7*44px)/14));
+        . '[data-form-element-type="datetime"] [data-form-element-component="date"]:not([data-form-element-data-disabled]){cursor:pointer;}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="months"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="years"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="time-hours"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="time-minutes"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="time-seconds"]{overflow:auto;overscroll-behavior:none;height:200px;}'
+        . '[data-form-element-type="datetime"] [data-form-element-component="month"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="year"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="time-hour"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="time-minute"],'
+        . '[data-form-element-type="datetime"] [data-form-element-component="time-second"]{cursor:pointer;}';
+}
+echo  '</style>';
 
 echo '<script>'
     . 'var ivoPetkovBearFrameworkAddonsFormElementsDateTimeFormatDate=' . $app->localization->getFormatDateJsFunction() . ';'
@@ -106,7 +110,20 @@ if ($type === 'button') {
     }
     echo '<span data-form-element-component="button" role="button" tabindex="0">' . ($formatDateValue !== '' ? $app->localization->formatDate($formatDateValue, $formatDateOptions) : '') . '</span>';
 }
-echo '<input type="hidden"' . Utilities::getElementAttributes('datetime', $attributes) . '/>';
+$inputType = 'hidden';
+if ($type === 'native') {
+    if ($showDate && $showTime) {
+        $inputType = 'datetime-local';
+        $attributes['step'] = 60;
+    } elseif ($showDate) {
+        $inputType = 'date';
+    } elseif ($showTime) {
+        $inputType = 'time';
+        $attributes['step'] = 60;
+    }
+    $attributes['data-form-element-component'] = 'input';
+}
+echo '<input type="' . $inputType . '"' . Utilities::getElementAttributes('datetime', $attributes) . '/>';
 if ($type === 'button') {
     echo '<div></div>';
 } else if ($type === 'block') {
